@@ -1,39 +1,69 @@
+/* Определение дизайн-системы (Токены) */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Палитра (Архитектурная, темная тема) */
+  --color-bg: oklch(18% 0.01 250);      /* Глубокий графитовый */
+  --color-surface: oklch(24% 0.01 250); /* Подложки */
+  --color-text: oklch(96% 0.01 250);    /* Холодный белый (не 100%) */
+  --color-muted: oklch(60% 0.02 250);   /* Второстепенный текст */
+  --color-accent: oklch(65% 0.06 45);   /* Бронзово-терракотовый */
+
+  /* Типографика */
+  /* Предполагаем, что Ogg/Editorial подключены локально, а Geist/Manrope из next/font */
+  --font-display: 'Ogg', 'PP Editorial New', serif;
+  --font-body: 'Manrope', 'Geist', sans-serif;
+
+  /* Шкала типографики (Ratio 1.333) */
+  --text-utility: 0.875rem; /* 14px */
+  --text-body: 1rem;        /* 16px */
+  --text-lead: 1.5rem;      /* 24px */
+  --text-h2: 4rem;          /* 64px */
+  --text-hero: clamp(3rem, 8vw, 7rem); /* 96px+ */
+
+  /* Пространство и сетка (Базовый шаг 4px) */
+  --space-xs: 0.25rem;  /* 4px */
+  --space-sm: 0.5rem;   /* 8px */
+  --space-md: 1rem;     /* 16px */
+  --space-lg: 2rem;     /* 32px */
+  --space-xl: 4rem;     /* 64px */
+  --space-section: clamp(7.5rem, 10vw, 15rem); /* 120px - 240px */
+  
+  --grid-gap: 1.5rem;
+  --radius-base: 0px; /* Строгие острые углы */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html {
-  height: 100%;
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
+/* Сброс и база */
 * {
   box-sizing: border-box;
+  margin: 0;
   padding: 0;
+}
+
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.4;
+  
+  /* Премиальный рендеринг шрифтов */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Настройка выделения текста (в цвет акцента) */
+::selection {
+  background-color: var(--color-accent);
+  color: var(--color-bg);
+}
+
+/* Заголовки */
+h1, h2, h3, .font-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.1;
   margin: 0;
 }
 
@@ -42,8 +72,7 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+button {
+  font-family: inherit;
+  border-radius: var(--radius-base);
 }
