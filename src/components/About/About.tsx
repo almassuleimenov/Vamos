@@ -20,68 +20,88 @@ const SPECIFICATIONS = [
 
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
-  const linesRef = useRef<HTMLDivElement[]>([]);
-  const rowsRef = useRef<HTMLDivElement[]>([]);
+  const dataColumnRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    // Анимация линий-разделителей (эффект черчения)
-    linesRef.current.forEach((line) => {
+    const mm = gsap.matchMedia();
+
+    // Предотвращение jarring change: разделители чертятся только при прокрутке
+    // в обоих режимах (нормальный и reduced-motion), т.к. это spatial explanation.
+    const dividers = gsap.utils.toArray<HTMLElement>(`.${styles.divider}`);
+    dividers.forEach((divider) => {
       gsap.fromTo(
-        line,
+        divider,
         { scaleX: 0 },
         {
           scaleX: 1,
-          ease: 'none', // Линейно, так как привязано к скроллу
+          ease: 'none', // linear для scrub
           scrollTrigger: {
-            trigger: line,
-            start: 'top 90%',
-            end: 'top 60%',
-            scrub: 1, // Вязкий, плавный скраб
+            trigger: divider,
+            start: 'top 95%',
+            end: 'top 80%',
+            scrub: true,
           },
         }
       );
     });
 
-    // Анимация появления данных (выплывают из-под линии)
-    rowsRef.current.forEach((row) => {
-      const value = row.querySelector(`.${styles.valueGroup}`);
-      const label = row.querySelector(`.${styles.label}`);
-
-      gsap.fromTo(
-        [value, label],
-        { y: 40, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1.2,
-          ease: 'power3.out',
-          stagger: 0.1,
+    // Анимация входа данных
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const rows = gsap.utils.toArray<HTMLElement>(`.${styles.rowContent}`);
+      
+      rows.forEach((row) => {
+        const label = row.querySelector(`.${styles.label}`);
+        const valueGroup = row.querySelector(`.${styles.valueGroup}`);
+        
+        const tl = gsap.timeline({
           scrollTrigger: {
             trigger: row,
-            start: 'top 85%',
+            start: 'top 90%',
+            // Не откатываем назад при обратном скролле (брендовое появление)
           },
+        });
+
+        // Появление: y(100%) из-под линии с легким snap-back в конце.
+        // Цель: Delight/Preventing a jarring change.
+        tl.fromTo(
+          [label, valueGroup],
+          { translateY: '100%', opacity: 0 },
+          {
+            translateY: '0%',
+            opacity: 1,
+            duration: 0.7,
+            stagger: 0.04, // Плотный стаггер внутри строки
+            ease: 'back.out(1.1)', // Легкий отскок для ощущения "встало на место"
+          }
+        );
+      });
+    });
+
+    // Мягкий фейд для reduced motion
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+       gsap.fromTo(
+        `.${styles.rowContent}`,
+        { opacity: 0 },
+        {
+          opacity: 1,
+          duration: 0.4,
+          stagger: 0.1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: dataColumnRef.current,
+            start: 'top 80%',
+          }
         }
       );
     });
+
+    return () => mm.revert();
   }, { scope: sectionRef });
-
-  const addToLinesRef = (el: HTMLDivElement | null) => {
-    if (el && !linesRef.current.includes(el)) {
-      linesRef.current.push(el);
-    }
-  };
-
-  const addToRowsRef = (el: HTMLDivElement | null) => {
-    if (el && !rowsRef.current.includes(el)) {
-      rowsRef.current.push(el);
-    }
-  };
 
   return (
     <section className={styles.about} ref={sectionRef} id="specifications">
       <div className={styles.container}>
         
-        {/* Левая колонка со sticky-заголовком */}
         <div className={styles.stickyColumn}>
           <h2 className={styles.sectionTitle}>
             Технико-экономические<br />
@@ -93,17 +113,12 @@ export default function About() {
           </div>
         </div>
 
-        {/* Правая колонка с данными */}
-        <div className={styles.dataColumn}>
+        <div className={styles.dataColumn} ref={dataColumnRef}>
           {SPECIFICATIONS.map((spec, index) => (
             <div className={styles.rowWrapper} key={index}>
-              {/* Линия-разделитель */}
-              <div 
-                className={styles.divider} 
-                ref={addToLinesRef}
-              />
+              <div className={styles.divider} />
               
-              <div className={styles.rowContent} ref={addToRowsRef}>
+              <div className={styles.rowContent}>
                 <span className={styles.label}>{spec.label}</span>
                 <div className={styles.valueGroup}>
                   <span className={styles.value}>{spec.value}</span>
@@ -112,8 +127,7 @@ export default function About() {
               </div>
             </div>
           ))}
-          {/* Финальная линия, чтобы закрыть блок */}
-          <div className={styles.divider} ref={addToLinesRef} />
+          <div className={styles.divider} />
         </div>
 
       </div>
