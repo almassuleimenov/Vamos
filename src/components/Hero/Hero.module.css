@@ -1,12 +1,12 @@
 .hero {
-  /* Используем svh чтобы избежать прыжков интерфейса на мобильных устройствах при скролле */
   min-height: 100svh;
   background-color: var(--bg-granite);
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* Гравитация: всё падает вниз */
+  justify-content: flex-end;
   overflow: hidden;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .container {
@@ -15,7 +15,7 @@
   margin: 0 auto;
   padding: var(--container-padding);
   position: relative;
-  z-index: 10; /* Текст всегда поверх будущего рендера */
+  z-index: 10;
 }
 
 .content {
@@ -31,34 +31,34 @@
   line-height: 1.05;
   color: var(--text-primary);
   margin: 0 0 var(--space-gap) 0;
-  letter-spacing: -0.02em; /* Делаем сериф плотнее и монументальнее */
+  letter-spacing: -0.02em;
 }
 
-/* Маска для GSAP-анимации появления (срезает текст, пока он всплывает) */
 .lineMask {
   overflow: hidden;
-  padding-bottom: 0.1em; /* Защита от обрезки выносных элементов букв (р, у, д) */
+  padding-bottom: 0.1em;
 }
 
 .lineMask span {
   display: block;
+  will-change: transform;
 }
 
 .subtitle {
   font-family: var(--font-body);
   font-size: var(--text-step-1);
   color: var(--text-muted);
-  max-width: 42ch; /* Строгий контроль длины строки */
+  max-width: 42ch;
   line-height: 1.4;
   margin-bottom: calc(var(--space-gap) * 2);
+  will-change: transform, opacity;
 }
 
-/* Архитектурная кнопка-монолит */
 .cta {
   appearance: none;
   background: transparent;
   border: 1px solid var(--text-muted);
-  border-radius: var(--radius-global); /* 0px */
+  border-radius: var(--radius-global);
   padding: 1.25rem 2.5rem;
   color: var(--text-primary);
   font-family: var(--font-body);
@@ -71,11 +71,10 @@
   gap: 1rem;
   position: relative;
   overflow: hidden;
-  transition: border-color 0.4s cubic-bezier(0.25, 1, 0.5, 1),
-              color 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: border-color 0.4s var(--ease-out), color 0.4s var(--ease-out);
+  will-change: transform, opacity;
 }
 
-/* Псевдоэлемент для "тяжелой" заливки снизу вверх */
 .cta::before {
   content: '';
   position: absolute;
@@ -85,32 +84,43 @@
   height: 100%;
   background-color: var(--accent-brass);
   transform: translateY(100%);
-  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.4s var(--ease-out);
   z-index: -1;
 }
 
-.cta:hover,
-.cta:focus-visible {
-  color: var(--bg-granite);
-  border-color: var(--accent-brass);
-}
-
-.cta:hover::before,
-.cta:focus-visible::before {
-  transform: translateY(0);
-}
-
-/* Анимация иконки стрелки при ховере */
 .ctaIcon {
   display: flex;
-  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.4s var(--ease-out);
 }
 
-.cta:hover .ctaIcon {
-  transform: translate(4px, -4px);
+@media (hover: hover) and (pointer: fine) {
+  .cta:hover,
+  .cta:focus-visible {
+    color: var(--bg-granite);
+    border-color: var(--accent-brass);
+  }
+
+  .cta:hover::before,
+  .cta:focus-visible::before {
+    transform: translateY(0);
+  }
+
+  .cta:hover .ctaIcon {
+    transform: translate(4px, -4px);
+  }
 }
 
-/* Отзывчивость: на мобильных кнопка растягивается на всю ширину для удобства тапа */
+@media (prefers-reduced-motion: reduce) {
+  .cta {
+    transition-duration: 150ms;
+  }
+  .cta::before,
+  .ctaIcon {
+    transition: none;
+    transform: none !important;
+  }
+}
+
 @media (max-width: 768px) {
   .cta {
     width: 100%;

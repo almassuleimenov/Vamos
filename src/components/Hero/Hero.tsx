@@ -5,7 +5,6 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import styles from './Hero.module.css';
 
-// Регистрируем плагин GSAP (лучше вынести в общий утилитный файл, но для компонента оставляем здесь)
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(useGSAP);
 }
@@ -15,40 +14,51 @@ export default function Hero() {
   const titleRef = useRef<HTMLHeadingElement>(null);
 
   useGSAP(() => {
-    const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    const mm = gsap.matchMedia();
 
-    // Эффект "тяжелого камня" — медленное всплытие слов с маской
-    tl.fromTo(
-      '.reveal-text',
-      { yPercent: 100, opacity: 0 },
-      { yPercent: 0, opacity: 1, duration: 1.8, stagger: 0.1, delay: 0.2 }
-    )
-    .fromTo(
-      `.${styles.subtitle}`,
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1.2 },
-      '-=1.2'
-    )
-    .fromTo(
-      `.${styles.cta}`,
-      { opacity: 0 },
-      { opacity: 1, duration: 1 },
-      '-=1.0'
-    );
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+
+      tl.fromTo(
+        '.reveal-text',
+        { yPercent: 110, rotate: 2, transformOrigin: 'left top' },
+        { yPercent: 0, rotate: 0, duration: 1.2, stagger: 0.08, delay: 0.1 }
+      )
+      .fromTo(
+        `.${styles.subtitle}`,
+        { y: 24, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1 },
+        '<0.4' 
+      )
+      .fromTo(
+        `.${styles.cta}`,
+        { y: 16, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8 },
+        '<0.3' 
+      );
+    });
+
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+      gsap.to(['.reveal-text', `.${styles.subtitle}`, `.${styles.cta}`], {
+        opacity: 1,
+        y: 0,
+        yPercent: 0,
+        rotate: 0,
+        duration: 0.4,
+        ease: 'power2.out',
+        stagger: 0.1
+      });
+    });
+
+    return () => mm.revert();
   }, { scope: sectionRef });
 
   const handleScrollToForm = () => {
-    // В будущем здесь будет GSAP scrollTo или Lenis scrollTo до формы
     console.log('Scroll to contact form');
   };
 
   return (
     <section className={styles.hero} ref={sectionRef}>
-      {/* 
-        Здесь в будущем будет компонент <FacadeRender /> или <Image /> 
-        с position: absolute и z-index: 0 
-      */}
-      
       <div className={styles.container}>
         <div className={styles.content}>
           <h1 className={styles.title} ref={titleRef}>
