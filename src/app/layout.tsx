@@ -1,17 +1,30 @@
 import type { Metadata } from 'next';
-import { Manrope } from 'next/font/google';
+import { Playfair_Display, Manrope } from 'next/font/google';
+import SmoothScroll from '@/ui/SmoothScroll/SmoothScroll';
 import './globals.css';
 
-// Настройка гротеска для наборного текста
-const manrope = Manrope({ 
+// Display шрифт для заголовков (монументальный сериф)
+const playfair = Playfair_Display({
   subsets: ['latin', 'cyrillic'],
+  weight: ['400', '500'],
+  variable: '--font-display',
+  display: 'swap',
+});
+
+// Body шрифт заменен на Manrope: строгая геометрия, идеальная поддержка кириллицы
+const manrope = Manrope({
+  subsets: ['latin', 'cyrillic'],
+  weight: ['400', '500'],
   variable: '--font-body',
   display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: 'Аль-Фараби 75/2 | Премиальное коммерческое пространство',
-  description: 'Эксклюзивные офисные и коммерческие площади в центре Алматы.',
+  title: 'Институт Коммуникаций | Аль-Фараби 75/2',
+  description: 'Премиальное коммерческое пространство. Офисы и детейлинг.',
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export default function RootLayout({
@@ -20,12 +33,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    // В будущем здесь lang="ru" будет меняться динамически через i18n
-    <html lang="ru" className={manrope.variable}>
+    <html 
+      lang="ru" 
+      className={`${playfair.variable} ${manrope.variable}`}
+    >
       <body>
-        {/* Здесь позже добавим Header и CustomCursor (если нужен) */}
-        {children}
-        {/* Здесь позже добавим Footer */}
+        <SmoothScroll>
+          {children}
+        </SmoothScroll>
       </body>
     </html>
   );
