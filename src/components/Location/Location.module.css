@@ -1,0 +1,144 @@
+.location {
+  padding: var(--space-section) 0;
+  background-color: var(--bg-granite);
+  color: var(--text-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* Карта прижата вправо */
+  min-height: 80vh;
+}
+
+/* Типографический блок (Наезжает на карту) */
+.textBlock {
+  position: absolute;
+  left: var(--container-padding);
+  z-index: 10;
+  max-width: 480px;
+  background-color: color-mix(in srgb, var(--bg-granite) 80%, transparent);
+  backdrop-filter: blur(12px);
+  padding: 3rem;
+  border: 1px solid color-mix(in srgb, var(--text-muted) 15%, transparent);
+  /* Легкая тень, чтобы оторвать от карты */
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+}
+
+.label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent-brass);
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-step-4);
+  line-height: 1.05;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+}
+
+.description {
+  font-family: var(--font-body);
+  font-size: var(--text-step-0);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* Контейнер карты */
+.mapWrapper {
+  width: 75%; /* Занимает 3/4 экрана справа */
+  aspect-ratio: 16 / 9;
+  position: relative;
+  background-color: var(--bg-surface);
+  border: 1px solid color-mix(in srgb, var(--text-muted) 15%, transparent);
+}
+
+/* Защита от перехвата скролла Lenis */
+.mapOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.mapOverlay:hover {
+  background-color: color-mix(in srgb, var(--bg-granite) 40%, transparent);
+}
+
+.overlayText {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+  background-color: var(--bg-granite);
+  padding: 1rem 2rem;
+  border: 1px solid var(--text-muted);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.mapOverlay:hover .overlayText {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Стилизация iframe Yandex-карты под темную тему сайта */
+.iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+  /* 
+    Магический фильтр:
+    1. Инвертируем цвета (белый -> черный)
+    2. Крутим Hue, чтобы вернуть цветам (вода, пробки) правильный оттенок после инверсии
+    3. Добавляем контраст и убираем лишнюю насыщенность (под гранит)
+  */
+  filter: invert(90%) hue-rotate(180deg) grayscale(80%) contrast(110%);
+  transition: filter 0.5s ease;
+}
+
+/* На мобильных устройствах ломаем наслоение, делаем блоки последовательными */
+@media (max-width: 1024px) {
+  .container {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 2rem;
+    min-height: auto;
+  }
+
+  .textBlock {
+    position: relative;
+    left: 0;
+    max-width: 100%;
+    padding: 0;
+    background-color: transparent;
+    backdrop-filter: none;
+    border: none;
+    box-shadow: none;
+  }
+
+  .mapWrapper {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+  }
+}

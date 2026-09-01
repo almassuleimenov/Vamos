@@ -3,6 +3,7 @@ import styles from './page.module.css';
 import About from '@/components/About/About';
 import Specifications from '@/components/Specifications/Specifications';
 import FloorPlans from '@/components/FloorPlans/FloorPlans';
+import Location from '@/components/Location/Location';
 
 
 export default function Home() {
@@ -12,6 +13,7 @@ export default function Home() {
       <About/>
       <Specifications/>
       <FloorPlans/>
+      <Location/>
       
       
     
