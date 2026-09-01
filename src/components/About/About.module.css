@@ -1,0 +1,129 @@
+.about {
+  padding: var(--space-section) 0;
+  background-color: var(--bg-granite);
+  color: var(--text-primary);
+  position: relative;
+}
+
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+  display: grid;
+  grid-template-columns: 4fr 8fr; /* Асимметричный сплит */
+  gap: var(--space-gap);
+  align-items: start;
+}
+
+/* Левая часть */
+.stickyColumn {
+  position: sticky;
+  top: var(--space-section); /* Останавливается при скролле */
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.sectionTitle {
+  font-family: var(--font-body);
+  font-size: var(--text-step-2);
+  color: var(--text-muted);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+/* Маленький технический индикатор */
+.indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.875rem; /* text-step-0 или меньше */
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent-brass);
+  border-radius: 50%; /* Единственное исключение для круга — микро-индикатор */
+}
+
+/* Правая часть (Данные) */
+.dataColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.rowWrapper {
+  position: relative;
+  overflow: hidden; /* Важно для скрытия текста при GSAP-появлении (y: 40) */
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: var(--text-muted);
+  opacity: 0.2;
+  transform-origin: left center;
+  /* Анимация scaleX управляется GSAP через скролл */
+}
+
+.rowContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end; /* Выравнивание по базовой линии гигантских цифр */
+  padding: clamp(2rem, 4vw, 3.5rem) 0;
+}
+
+.label {
+  font-family: var(--font-body);
+  font-size: var(--text-step-1);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.valueGroup {
+  display: flex;
+  align-items:baseline; /* Выравнивание цифр и единиц измерения */
+  gap: 0.5rem;
+}
+
+.value {
+  font-family: var(--font-display);
+  font-size: var(--text-step-4); /* Массивные значения */
+  line-height: 0.85; /* Сжимаем сериф, чтобы он ощущался монолитом */
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums; /* Отключаем прыжки ширины цифр */
+}
+
+.unit {
+  font-family: var(--font-body);
+  font-size: var(--text-step-0);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Отзывчивость */
+@media (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr; /* Схлопываем в одну колонку */
+    gap: 4rem;
+  }
+
+  .stickyColumn {
+    position: static;
+  }
+
+  .rowContent {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 2rem 0;
+  }
+}
