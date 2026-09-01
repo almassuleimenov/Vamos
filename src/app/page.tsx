@@ -1,6 +1,7 @@
 import Hero from '@/components/Hero/Hero';
 import styles from './page.module.css';
 import About from '@/components/About/About';
+import Specifications from '@/components/Specifications/Specifications';
 
 
 export default function Home() {
@@ -8,6 +9,7 @@ export default function Home() {
     <main className={styles.main}>
       <Hero/>
       <About/>
+      <Specifications/>
       
       
     
