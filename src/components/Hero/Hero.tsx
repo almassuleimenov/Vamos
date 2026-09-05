@@ -1,94 +1,62 @@
 'use client';
 
-import { useRef } from 'react';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { ArrowDownRight } from 'lucide-react';
 import styles from './Hero.module.css';
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(useGSAP);
-}
-
 export default function Hero() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-
-  useGSAP(() => {
-    const mm = gsap.matchMedia();
-
-    mm.add("(prefers-reduced-motion: no-preference)", () => {
-      const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
-
-      tl.fromTo(
-        '.reveal-text',
-        { yPercent: 110, rotate: 2, transformOrigin: 'left top' },
-        { yPercent: 0, rotate: 0, duration: 1.2, stagger: 0.08, delay: 0.1 }
-      )
-      .fromTo(
-        `.${styles.subtitle}`,
-        { y: 24, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1 },
-        '<0.4' 
-      )
-      .fromTo(
-        `.${styles.cta}`,
-        { y: 16, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8 },
-        '<0.3' 
-      );
-    });
-
-    mm.add("(prefers-reduced-motion: reduce)", () => {
-      gsap.to(['.reveal-text', `.${styles.subtitle}`, `.${styles.cta}`], {
-        opacity: 1,
-        y: 0,
-        yPercent: 0,
-        rotate: 0,
-        duration: 0.4,
-        ease: 'power2.out',
-        stagger: 0.1
-      });
-    });
-
-    return () => mm.revert();
-  }, { scope: sectionRef });
-
-  const handleScrollToForm = () => {
-    console.log('Scroll to contact form');
-  };
-
   return (
-    <section className={styles.hero} ref={sectionRef}>
-      <div className={styles.container}>
-        <div className={styles.content}>
-          <h1 className={styles.title} ref={titleRef}>
-            <div className={styles.lineMask}>
-              <span className="reveal-text">Институт</span>
-            </div>
-            <div className={styles.lineMask}>
-              <span className="reveal-text">Коммуникаций</span>
-            </div>
+    <section className={styles.hero}>
+      {/* Background Video Layer */}
+      <div className={styles.videoWrapper}>
+        <video 
+          className={styles.video}
+          autoPlay 
+          loop 
+          muted 
+          playsInline
+          poster="/video-poster.jpg" // Заглушка, если видео грузится
+        >
+          <source src="/Hero.mp4" type="video/mp4" />
+        </video>
+        {/* Деликатный градиент только по краям для смягчения интерфейса, центр чистый */}
+        <div className={styles.videoScrim} aria-hidden="true" />
+      </div>
+
+      {/* Structural Content Block */}
+      <div className={styles.contentGrid}>
+        <motion.div 
+          className={styles.textBlock}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <div className={styles.eyebrow}>
+            <span className={styles.monoLabel}>REF: 352403</span>
+            <span className={styles.monoLabel}>АЛЬ-ФАРАБИ, 75/2</span>
+          </div>
+
+          <h1 className={styles.title}>
+            Институт<br />
+            Коммуникации
           </h1>
-          
-          <p className={styles.subtitle}>
-            Премиальное коммерческое пространство на Аль-Фараби 75/2. 
-            Архитектура, диктующая статус вашего бизнеса.
+
+          <p className={styles.greeting}>
+            Премиальное коммерческое пространство, формирующее новый архитектурный стандарт Алматы. 
+            Проект разработан с фокусом на энергоэффективность и интеграцию в окружающий ландшафт.
           </p>
 
-          <button 
-            type="button" 
-            className={styles.cta}
-            onClick={handleScrollToForm}
-            aria-label="Связаться с отделом продаж"
+          <motion.a 
+            href="#architecture" 
+            className={styles.scrollAction}
+            whileHover={{ x: 5 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
           >
-            <span className={styles.ctaLabel}>Связаться</span>
-            <span className={styles.ctaIcon}>
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1 13L13 1M13 1V11.4M13 1H2.6" stroke="currentColor" strokeWidth="1.5"/>
-              </svg>
-            </span>
-          </button>
-        </div>
+            <span className={styles.scrollText}>Исследовать проект</span>
+            <ArrowDownRight size={20} strokeWidth={1.5} />
+          </motion.a>
+        </motion.div>
       </div>
     </section>
   );
