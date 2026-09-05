@@ -1,144 +1,161 @@
 .location {
-  padding: var(--space-section) 0;
-  background-color: var(--bg-granite);
-  color: var(--text-primary);
+  background-color: var(--bg);
+  padding: var(--space-xxl) var(--space-lg);
+  border-bottom: 1px solid var(--border);
+}
+
+/* --- HEADER --- */
+.header {
+  margin-bottom: var(--space-xl);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 500;
+  color: var(--text);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+/* --- GRID --- */
+.grid {
+  display: grid;
+  grid-template-columns: 4fr 8fr; /* Асимметричный сплит в пользу карты */
+  border: 1px solid var(--border);
+  background-color: var(--bg);
+}
+
+/* --- INFO BLOCK --- */
+.infoBlock {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-xl) var(--space-lg);
+  border-right: 1px solid var(--border);
+}
+
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--space-xs);
+}
+
+.metaLabel {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.metaValue {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+
+.address {
+  font-size: var(--text-lg);
+  line-height: 1.3;
+  color: var(--text);
+  font-style: normal;
+  font-weight: 500;
+  margin-bottom: var(--space-xl);
+}
+
+/* --- INFRASTRUCTURE LIST --- */
+.infrastructure {
+  margin-top: auto; /* Прижимаем список к низу блока */
+}
+
+.infraTitle {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-md);
+}
+
+.infraList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.infraItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  font-size: var(--text-base);
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.infraDot {
+  display: block;
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent);
+  flex-shrink: 0;
+  margin-top: 0.5em; /* Выравнивание по оптическому центру первой строки */
+}
+
+/* --- MAP CONTAINER --- */
+.mapContainer {
   position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 575px; /* Заданная клиентом высота как минимум */
+  background-color: var(--surface); /* Цвет-заглушка на время загрузки iframe */
   overflow: hidden;
 }
 
-.container {
-  max-width: var(--container-width);
-  margin: 0 auto;
-  padding: 0 var(--container-padding);
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end; /* Карта прижата вправо */
-  min-height: 80vh;
-}
-
-/* Типографический блок (Наезжает на карту) */
-.textBlock {
+.mapIframe {
   position: absolute;
-  left: var(--container-padding);
-  z-index: 10;
-  max-width: 480px;
-  background-color: color-mix(in srgb, var(--bg-granite) 80%, transparent);
-  backdrop-filter: blur(12px);
-  padding: 3rem;
-  border: 1px solid color-mix(in srgb, var(--text-muted) 15%, transparent);
-  /* Легкая тень, чтобы оторвать от карты */
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
-}
-
-.label {
-  display: block;
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--accent-brass);
-  margin-bottom: 2rem;
-}
-
-.title {
-  font-family: var(--font-display);
-  font-size: var(--text-step-4);
-  line-height: 1.05;
-  color: var(--text-primary);
-  margin-bottom: 2rem;
-}
-
-.description {
-  font-family: var(--font-body);
-  font-size: var(--text-step-0);
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-
-/* Контейнер карты */
-.mapWrapper {
-  width: 75%; /* Занимает 3/4 экрана справа */
-  aspect-ratio: 16 / 9;
-  position: relative;
-  background-color: var(--bg-surface);
-  border: 1px solid color-mix(in srgb, var(--text-muted) 15%, transparent);
-}
-
-/* Защита от перехвата скролла Lenis */
-.mapOverlay {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  background-color: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.mapOverlay:hover {
-  background-color: color-mix(in srgb, var(--bg-granite) 40%, transparent);
-}
-
-.overlayText {
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-primary);
-  background-color: var(--bg-granite);
-  padding: 1rem 2rem;
-  border: 1px solid var(--text-muted);
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.mapOverlay:hover .overlayText {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Стилизация iframe Yandex-карты под темную тему сайта */
-.iframe {
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  display: block;
   /* 
-    Магический фильтр:
-    1. Инвертируем цвета (белый -> черный)
-    2. Крутим Hue, чтобы вернуть цветам (вода, пробки) правильный оттенок после инверсии
-    3. Добавляем контраст и убираем лишнюю насыщенность (под гранит)
+    Опционально: можно использовать filter: grayscale(0.2) contrast(1.05) 
+    чтобы слегка приглушить цвета Яндекса и вписать в нашу палитру, 
+    но по дефолту оставляем как есть, чтобы не ломать UX. 
   */
-  filter: invert(90%) hue-rotate(180deg) grayscale(80%) contrast(110%);
-  transition: filter 0.5s ease;
 }
 
-/* На мобильных устройствах ломаем наслоение, делаем блоки последовательными */
+/* --- АДАПТИВ --- */
 @media (max-width: 1024px) {
-  .container {
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: stretch;
-    gap: 2rem;
-    min-height: auto;
+  .grid {
+    grid-template-columns: 1fr;
   }
-
-  .textBlock {
-    position: relative;
-    left: 0;
-    max-width: 100%;
-    padding: 0;
-    background-color: transparent;
-    backdrop-filter: none;
-    border: none;
-    box-shadow: none;
+  
+  .infoBlock {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
   }
+  
+  .mapContainer {
+    min-height: 500px;
+  }
+}
 
-  .mapWrapper {
-    width: 100%;
-    aspect-ratio: 4 / 3;
+@media (max-width: 768px) {
+  .location {
+    padding: var(--space-xl) var(--space-md);
+  }
+  
+  .infoBlock {
+    padding: var(--space-lg) var(--space-md);
+  }
+  
+  .address {
+    font-size: var(--text-md);
+    margin-bottom: var(--space-lg);
+  }
+  
+  .mapContainer {
+    min-height: 400px; /* Экономим экранное пространство на мобилках */
   }
 }
