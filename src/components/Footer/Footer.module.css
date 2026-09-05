@@ -1,0 +1,162 @@
+.footer {
+  background-color: var(--bg);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- GRID TOP --- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  padding: var(--space-xl) var(--space-lg);
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  margin: 0;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--space-xs);
+}
+
+.address {
+  font-size: var(--text-base);
+  line-height: 1.5;
+  color: var(--text);
+  font-style: normal;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text);
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+  align-self: flex-start;
+}
+
+.link:hover {
+  color: var(--accent);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.listItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.itemRole {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.itemValue {
+  font-size: var(--text-base);
+  color: var(--text);
+  font-weight: 500;
+}
+
+.linkHover {
+  font-size: var(--text-base);
+  color: var(--text);
+  font-weight: 500;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.linkHover:hover {
+  opacity: 0.6;
+}
+
+/* --- FOUNDATION (BOTTOM) --- */
+.foundation {
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--space-lg);
+  overflow: hidden;
+}
+
+.foundationMeta {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-md) 0;
+  border-top: 1px solid var(--border);
+}
+
+.monoText {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.massiveText {
+  font-family: var(--font-display);
+  /* Жидкостное масштабирование: от 3rem на мобилках до огромного размера на десктопе */
+  font-size: clamp(3rem, 12vw, 15rem);
+  font-weight: 700;
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  color: var(--text);
+  text-align: center;
+  /* Отрезаем нижний отступ, чтобы текст визуально упирался в край экрана */
+  margin-bottom: -0.1em;
+  white-space: nowrap;
+}
+
+/* --- АДАПТИВ --- */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+    padding: var(--space-xl) var(--space-md);
+  }
+  
+  .foundation {
+    padding: 0 var(--space-md);
+  }
+  
+  .foundationMeta {
+    flex-direction: column;
+    gap: var(--space-xs);
+    align-items: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 380px) {
+  .grid {
+    padding: var(--space-lg) var(--space-sm);
+  }
+  
+  .foundation {
+    padding: 0 var(--space-sm);
+  }
+}
