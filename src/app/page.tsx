@@ -12,15 +12,12 @@ export default function Home() {
     <main className={styles.main}>
       <Hero/>
       <About/>
+      {/* FLoorPlans */}
       <Gallery/>
       <Location/>
       <CtaForm/>
       <Footer/>
-      
-      
-      
-      
-    
+
     </main>
   );
 }
