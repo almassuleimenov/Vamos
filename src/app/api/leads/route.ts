@@ -4,13 +4,15 @@ export async function POST(request: Request) {
   try {
     const data = await request.json();
 
-    // Токены должны лежать в файле .env.local
-    // Укажи здесь свои данные, если не используешь .env
-    const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8898484039:AAFjWZ-qWd2IO38NH0H-9TvRKaj55bekRSk';
-    const CHAT_ID = process.env.TELEGRAM_CHAT_ID || 'ВАШ_CHAT_ID'; // Замени на свой ID
-    const GOOGLE_WEBHOOK = process.env.GOOGLE_SHEETS_WEBHOOK_URL || 'ВАШ_WEBHOOK_ИЗ_APPS_SCRIPT';
+    const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+    const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+    const GOOGLE_WEBHOOK = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
 
-    // Формируем строгий шаблон для Telegram
+    if (!CHAT_ID || !BOT_TOKEN) {
+      console.error('❌ ОШИБКА: Не заданы ключи Telegram.');
+      return NextResponse.json({ status: 'error', message: 'TG config error' }, { status: 500 });
+    }
+
     const tgText = `
 🏢 <b>Новый запрос: Аль-Фараби 75/2</b>
 ━━━━━━━━━━━━━━━━━━━━
@@ -21,30 +23,46 @@ export async function POST(request: Request) {
 ${data.message || 'Без комментариев'}
     `.trim();
 
-    // Параллельная отправка запросов в TG и Sheets (экономим время ответа)
-    const [tgResponse, sheetsResponse] = await Promise.allSettled([
-      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: CHAT_ID,
-          text: tgText,
-          parse_mode: 'HTML',
-        }),
-      }),
-      // Раскомментируй, когда сделаешь Webhook в Google Sheets (инструкцию давал шагом ранее)
-      fetch(GOOGLE_WEBHOOK, {
+    // 1. Отправляем в Telegram
+    const tgRequest = fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: CHAT_ID, text: tgText, parse_mode: 'HTML' }),
+    });
+
+    // 2. Отправляем в Google Sheets
+    let sheetsRequest = null;
+    if (GOOGLE_WEBHOOK) {
+      sheetsRequest = fetch(GOOGLE_WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-      })
+        redirect: 'follow' // КРИТИЧНО ДЛЯ GOOGLE APPS SCRIPT! Без этого будет ошибка
+      });
+    }
 
+    // Ждем выполнения обоих запросов параллельно
+    const [tgResponse, sheetsResponse] = await Promise.allSettled([
+      tgRequest,
+      ...(sheetsRequest ? [sheetsRequest] : [])
     ]);
 
-    // Проверка статуса Telegram (основной канал)
+    // Проверка Telegram
     if (tgResponse.status === 'rejected' || !tgResponse.value.ok) {
-      console.error('Ошибка отправки в Telegram');
+      console.error('❌ Ошибка отправки в Telegram');
       throw new Error('Telegram API Error');
+    }
+
+    // Проверка Google Sheets
+    if (sheetsResponse && sheetsResponse.status === 'fulfilled') {
+      if (sheetsResponse.value.ok) {
+        console.log('✅ Данные успешно ушли в Google Sheets');
+      } else {
+        const errorText = await sheetsResponse.value.text();
+        console.error('❌ Google Sheets вернул ошибку:', sheetsResponse.value.status, errorText);
+      }
+    } else if (sheetsResponse && sheetsResponse.status === 'rejected') {
+      console.error('❌ Ошибка сети при обращении к Google Sheets:', sheetsResponse.reason);
     }
 
     return NextResponse.json({ status: 'success', message: 'Запрос обработан' }, { status: 200 });

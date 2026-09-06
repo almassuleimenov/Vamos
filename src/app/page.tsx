@@ -4,6 +4,7 @@ import About from '@/components/About/About';
 import Gallery from '@/components/Gallery/Gallery';
 import Location from '@/components/Location/Location';
 import Footer from '@/components/Footer/Footer';
+import CtaForm from '@/components/CtaForm/CtaForm';
 
 
 export default function Home() {
@@ -13,7 +14,9 @@ export default function Home() {
       <About/>
       <Gallery/>
       <Location/>
+      <CtaForm/>
       <Footer/>
+      
       
       
       
