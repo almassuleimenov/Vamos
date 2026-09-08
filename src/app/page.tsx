@@ -6,6 +6,7 @@ import Location from '@/components/Location/Location';
 import Footer from '@/components/Footer/Footer';
 import CtaForm from '@/components/CtaForm/CtaForm';
 import { FloatingSocials } from '@/components/FloatingSocials/FloatingSocials';
+import FloorPlans from '@/components/FloorPlans/FloorPlans';
 
 
 export default function Home() {
@@ -13,7 +14,7 @@ export default function Home() {
     <main className={styles.main}>
       <Hero/>
       <About/>
-      {/* FLoorPlans */}
+      <FloorPlans/>
       <Gallery/>
       <Location/>
       <CtaForm/>
