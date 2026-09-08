@@ -1,18 +1,29 @@
 .footer {
   width: 100vw;
-  background-color: var(--surface); /* Немного контрастирует с основным фоном */
+  background-color: var(--surface);
   color: var(--text);
-  border-top: 1px solid var(--footer-border);
-  padding-top: var(--space-xl);
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-xxl); /* Добавляем больше воздуха сверху для дыхания */
+  overflow-x: hidden;
 }
 
 .container {
   width: 100%;
-  max-width: 1440px;
+  /* Расширяем контейнер, чтобы убрать лишнюю пустоту по бокам */
+  max-width: 1720px;
   margin: 0 auto;
-  padding: 0 var(--space-lg);
+  /* Используем динамические отступы (4vw) на ультрашироких экранах */
+  padding: 0 max(var(--space-lg), 4vw);
   display: flex;
   flex-direction: column;
+}
+
+/* Обертка для кинематографичного выезда текста */
+.mask {
+  overflow: hidden;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+  will-change: transform;
 }
 
 /* Основная сетка */
@@ -20,39 +31,40 @@
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   gap: var(--space-xl) var(--space-md);
-  padding-bottom: var(--space-xl);
+  padding-bottom: var(--space-xxl);
 }
 
-/* Колонки */
+/* Перераспределяем колонки, чтобы они лучше заполняли широкое пространство */
 .brandCol {
   grid-column: 1 / 5;
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-xl);
 }
 
 .addressCol {
-  grid-column: 5 / 8;
+  grid-column: 5 / 9;
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--space-md);
 }
 
 .legalCol {
-  grid-column: 8 / 13;
+  grid-column: 9 / 13;
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--space-md);
 }
 
 /* Логотип */
 .logo {
   font-family: var(--font-display);
-  font-size: var(--text-xl);
+  font-size: var(--text-xxl); /* Увеличили лого для широкого футера */
   font-weight: 500;
   letter-spacing: -0.02em;
   text-transform: uppercase;
   line-height: 1;
+  will-change: transform;
 }
 
 /* Контакты */
@@ -66,7 +78,8 @@
 .contactItem {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
+  will-change: transform, opacity;
 }
 
 .contactLabel {
@@ -75,17 +88,36 @@
   color: var(--muted);
 }
 
+/* Направленное подчеркивание для ссылок */
 .contactLink {
+  position: relative;
   font-family: var(--font-mono);
   font-size: var(--text-base);
   color: var(--text);
   text-decoration: none;
-  transition: opacity 0.3s var(--footer-hover-easing);
   width: fit-content;
+  padding-bottom: 2px;
 }
 
-.contactLink:hover {
-  opacity: 0.6;
+.contactLink::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--text);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .contactLink:hover::after {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
 }
 
 .contactLink:focus-visible {
@@ -95,11 +127,13 @@
 
 /* Заголовки колонок */
 .colTitle {
+  display: block;
   font-family: var(--font-display);
   font-size: var(--text-sm);
-  color: var(--muted);
+  color: var(--text);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  will-change: transform;
 }
 
 /* Тексты */
@@ -107,7 +141,9 @@
   font-family: var(--font-display);
   font-size: var(--text-base);
   line-height: 1.5;
+  color: var(--muted);
   margin: 0;
+  will-change: transform, opacity;
 }
 
 .disclaimers {
@@ -120,9 +156,10 @@
   font-family: var(--font-display);
   font-size: var(--text-sm);
   color: var(--muted);
-  line-height: 1.4;
+  line-height: 1.5;
   margin: 0;
-  max-width: 60ch;
+  max-width: 50ch;
+  will-change: transform, opacity;
 }
 
 /* Нижний бар (Колофон) */
@@ -130,8 +167,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-md) 0;
-  border-top: 1px solid var(--footer-border);
+  padding: var(--space-md) 0 var(--space-lg);
+  border-top: 1px solid var(--border);
+  will-change: opacity;
 }
 
 .copyright {
@@ -145,30 +183,33 @@
 }
 
 .policyLink {
+  position: relative;
   font-family: var(--font-display);
   font-size: var(--text-sm);
   color: var(--muted);
   text-decoration: none;
-  transition: color 0.3s var(--footer-hover-easing);
+  transition: color 0.3s ease;
 }
 
 .policyLink:hover {
   color: var(--text);
 }
 
-.policyLink:focus-visible {
-  outline: 2px solid var(--text);
-  outline-offset: 4px;
+/* --- Fallback для Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+  .contactLink::after {
+    transition: none !important;
+  }
 }
 
-/* Адаптив */
+/* --- Адаптив --- */
 @media (max-width: 1024px) {
   .brandCol { grid-column: 1 / 6; }
-  .addressCol { grid-column: 6 / 13; }
+  .addressCol { grid-column: 7 / 13; }
   .legalCol { 
     grid-column: 1 / 13; 
-    border-top: 1px solid var(--footer-border);
-    padding-top: var(--space-md);
+    border-top: 1px solid var(--border);
+    padding-top: var(--space-lg);
   }
 }
 
@@ -187,13 +228,13 @@
   }
   
   .addressCol {
-    border-top: 1px solid var(--footer-border);
-    padding-top: var(--space-md);
+    border-top: 1px solid var(--border);
+    padding-top: var(--space-lg);
   }
 
   .bottomBar {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--space-sm);
+    gap: var(--space-md);
   }
 }

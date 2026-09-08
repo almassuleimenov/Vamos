@@ -1,61 +1,117 @@
 'use client';
 
 import Link from 'next/link';
+import { motion, useReducedMotion } from 'framer-motion';
 import styles from './Footer.module.css';
 
+// Кинематографичная кривая (резкий старт, очень плавное торможение)
+const customEase = [0.16, 1, 0.3, 1] as any;
+
 export default function Footer() {
+  const shouldReduceMotion = useReducedMotion();
+
+  // Контейнер для каскада
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.1 },
+    },
+  };
+
+  // Эффект Mask Reveal для заголовков
+  const maskVariants = {
+    hidden: { y: shouldReduceMotion ? 0 : '100%', opacity: shouldReduceMotion ? 0 : 1 },
+    show: { 
+      y: '0%', 
+      opacity: 1, 
+      transition: { duration: 1.2, ease: customEase } 
+    },
+  } as any;
+
+  // Деликатное появление для списков и текста
+  const fadeVariants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 16 },
+    show: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.8, ease: customEase } 
+    },
+  } as any;
+
   return (
     <footer className={styles.footer} id="footer">
       <div className={styles.container}>
         
-        {/* Главный блок: 12-колоночная сетка */}
-        <div className={styles.mainGrid}>
+        {/* Главный блок: Расширенная 12-колоночная сетка */}
+        <motion.div 
+          className={styles.mainGrid}
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.2 }}
+        >
           
           {/* Колонка 1: Бренд и Контакты (1-4) */}
           <div className={styles.brandCol}>
-            <div className={styles.logo}>WAMOS</div>
+            <div className={styles.mask}>
+              <motion.div variants={maskVariants} className={styles.logo}>WAMOS</motion.div>
+            </div>
+            
             <address className={styles.contacts}>
-              <div className={styles.contactItem}>
-                <span className={styles.contactLabel}>Отдел аренды и продаж</span>
-                <a href="tel:+77270000000" className={styles.contactLink}>+7 (727) 000-00-00</a>
-              </div>
-              <div className={styles.contactItem}>
-                <span className={styles.contactLabel}>Мессенджер</span>
-                <a href="https://wa.me/77270000000" target="_blank" rel="noopener noreferrer" className={styles.contactLink}>
-                  WhatsApp
-                </a>
-              </div>
-              <div className={styles.contactItem}>
-                <span className={styles.contactLabel}>Email</span>
-                <a href="mailto:sales@wamos.kz" className={styles.contactLink}>sales@wamos.kz</a>
-              </div>
+              {[
+                { label: 'Отдел аренды и продаж', val: '+7 (727) 000-00-00', href: 'tel:+77270000000' },
+                { label: 'Мессенджер', val: 'WhatsApp', href: 'https://wa.me/77270000000' },
+                { label: 'Email', val: 'sales@wamos.kz', href: 'mailto:sales@wamos.kz' }
+              ].map((contact, i) => (
+                <motion.div key={i} variants={fadeVariants} className={styles.contactItem}>
+                  <span className={styles.contactLabel}>{contact.label}</span>
+                  <a href={contact.href} target={contact.label === 'Мессенджер' ? '_blank' : '_self'} rel="noopener noreferrer" className={styles.contactLink}>
+                    {contact.val}
+                  </a>
+                </motion.div>
+              ))}
             </address>
           </div>
 
-          {/* Колонка 2: Локация (5-7) */}
+          {/* Колонка 2: Локация (5-8) */}
           <div className={styles.addressCol}>
-            <span className={styles.colTitle}>Локация</span>
-            <p className={styles.addressText}>
+            <div className={styles.mask}>
+              <motion.span variants={maskVariants} className={styles.colTitle}>Локация</motion.span>
+            </div>
+            <motion.p variants={fadeVariants} className={styles.addressText}>
               г. Алматы,<br />
               Бостандыкский район,<br />
               пр. Аль-Фараби, уч. 75/2
-            </p>
+            </motion.p>
           </div>
 
-          {/* Колонка 3: Дисклеймеры (8-13) */}
+          {/* Колонка 3: Дисклеймеры (9-13) */}
           <div className={styles.legalCol}>
-            <span className={styles.colTitle}>Юридическая информация</span>
+            <div className={styles.mask}>
+              <motion.span variants={maskVariants} className={styles.colTitle}>Юридическая информация</motion.span>
+            </div>
             <div className={styles.disclaimers}>
-              <p>Строительство ведется в строгом соответствии с градостроительными регламентами г. Алматы.</p>
-              <p>Полный пакет проектной и разрешительной документации предоставляется по запросу в отделе продаж.</p>
-              <p>Любая информация и визуализации на сайте носят информационный характер и не являются публичной офертой.</p>
+              {[
+                'Строительство ведется в строгом соответствии с градостроительными регламентами г. Алматы.',
+                'Полный пакет проектной и разрешительной документации предоставляется по запросу в отделе продаж.',
+                'Любая информация и визуализации на сайте носят информационный характер и не являются публичной офертой.'
+              ].map((text, i) => (
+                <motion.p key={i} variants={fadeVariants}>{text}</motion.p>
+              ))}
             </div>
           </div>
 
-        </div>
+        </motion.div>
 
         {/* Нижний бар: Копирайт и Политика */}
-        <div className={styles.bottomBar}>
+        <motion.div 
+          className={styles.bottomBar}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, ease: customEase, delay: 0.4 }}
+        >
           <div className={styles.copyright}>
             <span className={styles.mono}>© 2026</span> Бизнес-центр Wamos. Все права защищены.
           </div>
@@ -64,7 +120,7 @@ export default function Footer() {
               Политика конфиденциальности
             </Link>
           </div>
-        </div>
+        </motion.div>
 
       </div>
     </footer>
