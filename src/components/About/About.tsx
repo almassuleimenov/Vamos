@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import styles from './About.module.css';
 
 const metrics = [
@@ -20,69 +20,120 @@ const engineering = [
   { term: 'Лифт', desc: 'Пассажирский лифт, связывающий все 3 уровня.' },
 ];
 
+// Общая кривая для дорогого, плавного скольжения
+const customEase = [0.16, 1, 0.3, 1] as any;
+
 export default function About() {
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
+  const shouldReduceMotion = useReducedMotion();
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
+  // Контейнер управляет ритмом дочерних элементов (stagger)
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
       },
-      { threshold: 0.15 }
-    );
+    },
+  };
 
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
+  // Элементы появляются со смещением (если не включен Reduce Motion)
+  const itemVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: shouldReduceMotion ? 0 : 24 
+    },
+    show: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 1, ease: customEase } 
+    },
+  } as any;
+
+  // Анимация архитектурных засечек (GPU-friendly scaleX вместо width)
+  const lineVariants = {
+    hidden: { scaleX: 0, opacity: 0 },
+    show: { 
+      scaleX: 1, 
+      opacity: 1,
+      transition: { duration: 1.2, ease: customEase } 
+    },
+  } as any;
 
   return (
-    <section 
-      ref={sectionRef} 
-      className={`${styles.about} ${isVisible ? styles.visible : ''}`}
-      id="about"
-    >
+    <section className={styles.about} id="about">
       <div className={styles.container}>
         
         {/* Блок цифр (Метрики) */}
         <div className={styles.gridRow}>
           <div className={styles.titleCol}>
-            <h2 className={styles.sectionTitle}>Ключевые показатели</h2>
+            <motion.h2 
+              className={styles.sectionTitle}
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.8 }}
+              transition={{ duration: 0.8, ease: customEase }}
+            >
+              Ключевые показатели
+            </motion.h2>
           </div>
           
           <div className={styles.contentCol}>
-            <div className={styles.metricsGrid}>
+            <motion.div 
+              className={styles.metricsGrid}
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, margin: '-10%' }}
+            >
               {metrics.map((item, idx) => (
-                <div key={idx} className={styles.metricItem}>
+                <motion.div key={idx} className={styles.metricItem} variants={itemVariants}>
+                  {/* Линия-засечка */}
+                  <motion.div 
+                    className={styles.metricTick} 
+                    variants={lineVariants}
+                  />
                   <div className={styles.metricMarker}>+</div>
                   <div className={styles.metricValue}>
                     {item.value} <span className={styles.metricUnit}>{item.unit}</span>
                   </div>
                   <div className={styles.metricLabel}>{item.label}</div>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </div>
 
         {/* Блок архитектуры (Инженерия) */}
         <div className={styles.gridRow}>
           <div className={styles.titleCol}>
-            <h2 className={styles.sectionTitle}>Архитектура и инженерия</h2>
+            <motion.h2 
+              className={styles.sectionTitle}
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.8 }}
+              transition={{ duration: 0.8, ease: customEase }}
+            >
+              Архитектура и инженерия
+            </motion.h2>
           </div>
           
           <div className={styles.contentCol}>
-            <dl className={styles.engineeringList}>
+            <motion.dl 
+              className={styles.engineeringList}
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, margin: '-10%' }}
+            >
               {engineering.map((item, idx) => (
-                <div key={idx} className={styles.engineeringRow}>
+                <motion.div key={idx} className={styles.engineeringRow} variants={itemVariants}>
                   <dt className={styles.engineeringTerm}>{item.term}</dt>
                   <dd className={styles.engineeringDesc}>{item.desc}</dd>
-                </div>
+                </motion.div>
               ))}
-            </dl>
+            </motion.dl>
           </div>
         </div>
 

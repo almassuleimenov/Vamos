@@ -4,6 +4,7 @@
   background-color: var(--bg);
   color: var(--text);
   border-bottom: 1px solid var(--about-border);
+  overflow-x: hidden;
 }
 
 .container {
@@ -23,12 +24,10 @@
   padding-top: var(--space-lg);
 }
 
-/* Направляющая заголовков (колонки 1-4) */
 .titleCol {
   grid-column: 1 / 5;
 }
 
-/* Направляющая контента (колонки 5-13) */
 .contentCol {
   grid-column: 5 / 13;
 }
@@ -41,15 +40,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin: 0;
-  
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.8s var(--about-easing), transform 0.8s var(--about-easing);
-}
-
-.visible .sectionTitle {
-  opacity: 1;
-  transform: translateY(0);
+  will-change: transform, opacity;
 }
 
 /* --- Metrics Grid --- */
@@ -65,51 +56,29 @@
   flex-direction: column;
   gap: var(--space-xs);
   padding-top: var(--space-sm);
-  
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.8s var(--about-easing), transform 0.8s var(--about-easing);
+  will-change: transform, opacity;
 }
 
-/* Имитация засечек чертежа */
-.metricItem::before {
-  content: '';
+/* Засечка теперь отдельный div для GPU-анимации scaleX */
+.metricTick {
   position: absolute;
   top: 0;
   left: 0;
-  width: 0;
+  width: 24px;
   height: 1px;
   background-color: var(--text);
-  transition: width 1s var(--about-easing);
-}
-
-.visible .metricItem::before {
-  width: 24px;
+  transform-origin: left center;
+  will-change: transform;
 }
 
 .metricMarker {
   position: absolute;
   top: -7px;
-  left: 0;
+  left: 32px; /* Сдвинуто правее линии */
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--muted);
-  opacity: 0;
-  transition: opacity 1s var(--about-easing) 0.5s;
 }
-
-.visible .metricMarker {
-  opacity: 1;
-}
-
-/* Staggered animation */
-.visible .metricItem:nth-child(1) { transition-delay: 0.1s; }
-.visible .metricItem:nth-child(2) { transition-delay: 0.15s; }
-.visible .metricItem:nth-child(3) { transition-delay: 0.2s; }
-.visible .metricItem:nth-child(4) { transition-delay: 0.25s; }
-.visible .metricItem:nth-child(5) { transition-delay: 0.3s; }
-.visible .metricItem:nth-child(6) { transition-delay: 0.35s; }
-.visible .metricItem { opacity: 1; transform: translateY(0); }
 
 .metricValue {
   font-family: var(--font-mono);
@@ -146,25 +115,17 @@
   gap: var(--space-md);
   padding: var(--space-md) 0;
   border-bottom: 1px solid var(--about-border);
-  
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.8s var(--about-easing), 
-              transform 0.8s var(--about-easing),
-              padding-left 0.4s ease;
+  will-change: transform, opacity;
+  /* Анимируем GPU-свойство transform, а не padding */
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Деликатный hover-эффект для списков */
-.engineeringRow:hover {
-  padding-left: var(--space-xs);
+/* Ховер только для устройств с мышью (предотвращает залипания на iOS) */
+@media (hover: hover) and (pointer: fine) {
+  .engineeringRow:hover {
+    transform: translateX(8px);
+  }
 }
-
-.visible .engineeringRow:nth-child(1) { transition-delay: 0.2s; }
-.visible .engineeringRow:nth-child(2) { transition-delay: 0.3s; }
-.visible .engineeringRow:nth-child(3) { transition-delay: 0.4s; }
-.visible .engineeringRow:nth-child(4) { transition-delay: 0.5s; }
-.visible .engineeringRow:nth-child(5) { transition-delay: 0.6s; }
-.visible .engineeringRow { opacity: 1; transform: translateY(0); }
 
 .engineeringTerm {
   font-family: var(--font-display);
@@ -178,7 +139,17 @@
   font-size: var(--text-base);
   line-height: 1.5;
   color: var(--muted);
-  max-width: 55ch; /* Оптимальная длина строки для чтения */
+  max-width: 55ch; 
+}
+
+/* Отключение анимаций по запросу системы */
+@media (prefers-reduced-motion: reduce) {
+  .engineeringRow {
+    transition: none !important;
+  }
+  .engineeringRow:hover {
+    transform: none !important;
+  }
 }
 
 /* --- Responsive --- */
@@ -215,10 +186,6 @@
     grid-template-columns: 1fr;
     gap: var(--space-xs);
     padding: var(--space-sm) 0;
-  }
-  
-  .engineeringRow:hover {
-    padding-left: 0;
   }
   
   .engineeringDesc {
