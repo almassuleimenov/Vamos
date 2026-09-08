@@ -1,46 +1,93 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import styles from './FloorPlans.module.css';
 
-export default function FloorPlans() {
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
+// Кинематографичная кривая
+const customEase = [0.16, 1, 0.3, 1];
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
+export default function FloorPlans() {
+  const shouldReduceMotion = useReducedMotion();
+
+  // Контейнер для каскадного появления элементов левой колонки
+  const infoVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.1,
       },
-      { threshold: 0.15 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
+    },
+  };
+
+  // Mask Reveal для текста
+  const textVariants = {
+    hidden: { y: shouldReduceMotion ? 0 : '100%', opacity: shouldReduceMotion ? 0 : 1 },
+    show: { 
+      y: '0%', 
+      opacity: 1,
+      transition: { duration: 1.2, ease: customEase } 
+    },
+  } as any;
+
+  // GPU-оптимизированное появление линии
+  const dividerVariants = {
+    hidden: { scaleX: 0, opacity: 0 },
+    show: { 
+      scaleX: 1, 
+      opacity: 1,
+      transition: { duration: 1.2, ease: customEase } 
+    },
+  } as any;
+
+  // Появление правой колонки с легким смещением
+  const cardVariants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 24 },
+    show: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 1, ease: customEase, delay: 0.2 } 
+    },
+  } as any;
 
   return (
-    <section 
-      ref={sectionRef} 
-      className={`${styles.plans} ${isVisible ? styles.visible : ''}`} 
-      id="plans"
-    >
+    <section className={styles.plans} id="plans">
       <div className={styles.container}>
         <div className={styles.grid}>
           
           {/* Левая колонка: Описание */}
-          <div className={styles.infoCol}>
-            <h2 className={styles.title}>Поэтажные планы</h2>
-            <div className={styles.divider} />
-            <p className={styles.desc}>
-              Подробные архитектурные планировки, экспликация помещений, разрезы и схемы инженерных узлов для вашей команды проектировщиков.
-            </p>
-          </div>
+          <motion.div 
+            className={styles.infoCol}
+            variants={infoVariants}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+          >
+            <div className={styles.mask}>
+              <motion.h2 variants={textVariants} className={styles.title}>
+                Поэтажные планы
+              </motion.h2>
+            </div>
+            
+            <motion.div variants={dividerVariants} className={styles.divider} />
+            
+            <div className={styles.mask}>
+              <motion.p variants={textVariants} className={styles.desc}>
+                Подробные архитектурные планировки, экспликация помещений, 
+                разрезы и схемы инженерных узлов для вашей команды проектировщиков.
+              </motion.p>
+            </div>
+          </motion.div>
 
           {/* Правая колонка: Штамп скачивания */}
-          <div className={styles.downloadCol}>
+          <motion.div 
+            className={styles.downloadCol}
+            variants={cardVariants}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+          >
             <a 
               href="/document.pdf" 
               download="WAMOS_Архитектурный_Проект.pdf"
@@ -56,34 +103,26 @@ export default function FloorPlans() {
                   <span className={styles.metaLabel}>Формат</span>
                   <span className={styles.metaValue}>PDF (Вектор)</span>
                 </div>
-                <div className={styles.metaCell}>
-                  <span className={styles.metaLabel}>Размер</span>
-                  <span className={styles.metaValue}>4.2 MB</span>
-                </div>
               </div>
 
               {/* Нижняя часть карточки с призывом */}
               <div className={styles.cardBody}>
                 <span className={styles.actionText}>Скачать документацию</span>
                 <div className={styles.iconWrapper}>
-                  <svg 
-                    width="24" 
-                    height="24" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="1.5" 
-                    strokeLinecap="square" 
-                    strokeLinejoin="miter"
-                    className={styles.arrowIcon}
-                  >
-                    <line x1="12" y1="3" x2="12" y2="19"></line>
-                    <polyline points="5 12 12 19 19 12"></polyline>
+                  {/* Основная иконка */}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className={styles.arrowIcon}>
+                    <line x1="12" y1="3" x2="12" y2="19" strokeWidth="1.5" strokeLinecap="square" />
+                    <polyline points="5 12 12 19 19 12" strokeWidth="1.5" strokeLinecap="square" strokeLinejoin="miter" />
+                  </svg>
+                  {/* Иконка, которая прилетает сверху при ховере */}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className={styles.arrowIconHover}>
+                    <line x1="12" y1="3" x2="12" y2="19" strokeWidth="1.5" strokeLinecap="square" />
+                    <polyline points="5 12 12 19 19 12" strokeWidth="1.5" strokeLinecap="square" strokeLinejoin="miter" />
                   </svg>
                 </div>
               </div>
             </a>
-          </div>
+          </motion.div>
 
         </div>
       </div>
