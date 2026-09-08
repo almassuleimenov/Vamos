@@ -1,95 +1,77 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
+import { useState, useEffect, useCallback } from 'react';
 import styles from './Gallery.module.css';
 
 const images = [
-  {
-    src: '/IMG_5076.JPG.jpeg',
-    alt: 'Главный фасад с открытой террасой и витражами',
-    caption: 'ФАСАД И ВИТРАЖИ / 1 ЭТАЖ',
-    layout: 'hero', // Большое изображение
-  },
-  {
-    src: '/IMG_5077.JPG.jpeg',
-    alt: 'Угловой вид с коммерческими витринами',
-    caption: 'РИТЕЙЛ ЗОНА / УГЛОВОЙ ВИД',
-    layout: 'square', 
-  },
-  {
-    src: '/IMG_5078.JPG.jpeg',
-    alt: 'Вид с высоты птичьего полета на плоскую кровлю',
-    caption: 'ЭКСПЛУАТИРУЕМАЯ КРОВЛЯ / +11.700',
-    layout: 'square',
-  },
-  {
-    src: '/IMG_5079.JPG.jpeg',
-    alt: 'Входная группа со стороны пешеходной зоны',
-    caption: 'ВХОДНАЯ ГРУППА / БЛАГОУСТРОЙСТВО',
-    layout: 'landscape',
-  },
-  {
-    src: '/IMG_5080.JPG.jpeg',
-    alt: 'Детали архитектурного фасада здания',
-    caption: 'АРХИТЕКТУРНЫЕ ДЕТАЛИ',
-    layout: 'landscape',
-  },
+  { id: '01', src: '/IMG_5080.JPG.jpeg', span: 'full' },
+  { id: '02', src: '/IMG_5076.JPG.jpeg', span: 'half' },
+  { id: '03', src: '/IMG_5077.JPG.jpeg', span: 'half' },
+  { id: '04', src: '/IMG_5078.JPG.jpeg', span: 'offset' },
+  { id: '05', src: '/IMG_5079.JPG.jpeg', span: 'full' },
 ];
 
 export default function Gallery() {
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
+  const [activeImage, setActiveImage] = useState<string | null>(null);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
+  // Закрытие лайтбокса по Escape (важно для доступности и удобства)
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') setActiveImage(null);
   }, []);
 
-  return (
-    <section ref={sectionRef} className={`${styles.gallery} ${isVisible ? styles.visible : ''}`} id="gallery">
-      <div className={styles.container}>
-        
-        <div className={styles.header}>
-          <h2 className={styles.title}>Экстерьер и детали</h2>
-          <p className={styles.subtitle}>Визуализация архитектурного решения</p>
-        </div>
+  useEffect(() => {
+    if (activeImage) {
+      document.addEventListener('keydown', handleKeyDown);
+      // Блокируем скролл на странице, пока открыт лайтбокс
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [activeImage, handleKeyDown]);
 
+  return (
+    <section className={styles.gallery} id="gallery">
+      <div className={styles.container}>
         <div className={styles.grid}>
-          {images.map((img, idx) => (
-            <figure 
-              key={idx} 
-              className={`${styles.figure} ${styles[img.layout]}`}
+          {images.map((img) => (
+            <div 
+              key={img.id} 
+              className={`${styles.item} ${styles[img.span]}`}
+              onClick={() => setActiveImage(img.src)}
             >
-              <div className={styles.imageWrapper}>
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className={styles.image}
-                  priority={img.layout === 'hero'}
-                />
-                <div className={styles.overlay} />
+              <div className={styles.meta}>
+                <span className={styles.number}>{img.id}</span>
               </div>
-              <figcaption className={styles.caption}>
-                <span>{String(idx + 1).padStart(2, '0')}</span>
-                <span>{img.caption}</span>
-              </figcaption>
-            </figure>
+              <div className={styles.imageWrapper}>
+                <img 
+                  src={img.src} 
+                  alt={`WAMOS Render ${img.id}`} 
+                  className={styles.image} 
+                  loading="lazy"
+                />
+              </div>
+            </div>
           ))}
         </div>
-        
+      </div>
+
+      {/* Lightbox Overlay */}
+      <div 
+        className={`${styles.lightbox} ${activeImage ? styles.lightboxActive : ''}`}
+        onClick={() => setActiveImage(null)}
+      >
+        {activeImage && (
+          <img 
+            src={activeImage} 
+            alt="WAMOS Fullscreen Render" 
+            className={styles.lightboxImage} 
+          />
+        )}
       </div>
     </section>
   );

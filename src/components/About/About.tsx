@@ -48,31 +48,42 @@ export default function About() {
       <div className={styles.container}>
         
         {/* Блок цифр (Метрики) */}
-        <div className={styles.metricsGroup}>
-          <h2 className={styles.sectionTitle}>Ключевые показатели</h2>
-          <div className={styles.metricsGrid}>
-            {metrics.map((item, idx) => (
-              <div key={idx} className={styles.metricItem}>
-                <div className={styles.metricValue}>
-                  {item.value} <span className={styles.metricUnit}>{item.unit}</span>
+        <div className={styles.gridRow}>
+          <div className={styles.titleCol}>
+            <h2 className={styles.sectionTitle}>Ключевые показатели</h2>
+          </div>
+          
+          <div className={styles.contentCol}>
+            <div className={styles.metricsGrid}>
+              {metrics.map((item, idx) => (
+                <div key={idx} className={styles.metricItem}>
+                  <div className={styles.metricMarker}>+</div>
+                  <div className={styles.metricValue}>
+                    {item.value} <span className={styles.metricUnit}>{item.unit}</span>
+                  </div>
+                  <div className={styles.metricLabel}>{item.label}</div>
                 </div>
-                <div className={styles.metricLabel}>{item.label}</div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Блок архитектуры (Инженерия) */}
-        <div className={styles.engineeringGroup}>
-          <h2 className={styles.sectionTitle}>Архитектура и инженерия</h2>
-          <dl className={styles.engineeringList}>
-            {engineering.map((item, idx) => (
-              <div key={idx} className={styles.engineeringRow}>
-                <dt className={styles.engineeringTerm}>{item.term}</dt>
-                <dd className={styles.engineeringDesc}>{item.desc}</dd>
-              </div>
-            ))}
-          </dl>
+        <div className={styles.gridRow}>
+          <div className={styles.titleCol}>
+            <h2 className={styles.sectionTitle}>Архитектура и инженерия</h2>
+          </div>
+          
+          <div className={styles.contentCol}>
+            <dl className={styles.engineeringList}>
+              {engineering.map((item, idx) => (
+                <div key={idx} className={styles.engineeringRow}>
+                  <dt className={styles.engineeringTerm}>{item.term}</dt>
+                  <dd className={styles.engineeringDesc}>{item.desc}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
         </div>
 
       </div>
