@@ -5,6 +5,7 @@ import Gallery from '@/components/Gallery/Gallery';
 import Location from '@/components/Location/Location';
 import Footer from '@/components/Footer/Footer';
 import CtaForm from '@/components/CtaForm/CtaForm';
+import { FloatingSocials } from '@/components/FloatingSocials/FloatingSocials';
 
 
 export default function Home() {
@@ -17,6 +18,10 @@ export default function Home() {
       <Location/>
       <CtaForm/>
       <Footer/>
+
+
+
+       <FloatingSocials />
 
     </main>
   );
