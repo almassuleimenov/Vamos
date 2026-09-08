@@ -1,93 +1,79 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 import styles from './About.module.css';
 
-const fadeUpVariant = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
-} as any;
+const metrics = [
+  { value: '1 071.4', unit: 'м²', label: 'Общая площадь здания' },
+  { value: '611.3', unit: 'м²', label: 'Офисные и торговые пространства' },
+  { value: '263.2', unit: 'м²', label: 'Цоколь (паркинг / детейлинг)' },
+  { value: '3.9', unit: 'м', label: 'Высота потолков (1-2 этажи)' },
+  { value: '9', unit: 'баллов', label: 'Расчетная сейсмостойкость' },
+  { value: '0.0664', unit: 'га', label: 'Участок в частной собственности' },
+];
 
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 }
-  }
-};
+const engineering = [
+  { term: 'Фасад', desc: 'Навесной вентилируемый с минераловатным утеплением. RAL 7035, RAL 7012.' },
+  { term: 'Цоколь', desc: 'Натуральный гранит. RAL 7038.' },
+  { term: 'Остекление', desc: 'Алюминиевая витражная система, двухкамерные энергосберегающие стеклопакеты в пол.' },
+  { term: 'Конструктив', desc: 'Монолитный железобетонный каркас, монолитная фундаментная плита, газоблок 200 мм.' },
+  { term: 'Лифт', desc: 'Пассажирский лифт, связывающий все 3 уровня.' },
+];
 
 export default function About() {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="architecture" className={styles.about}>
-      <div className={styles.grid}>
+    <section 
+      ref={sectionRef} 
+      className={`${styles.about} ${isVisible ? styles.visible : ''}`}
+      id="about"
+    >
+      <div className={styles.container}>
         
-        {/* Left Column: Concept & Philosophy */}
-        <motion.div 
-          className={styles.concept}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-10%" }}
-          variants={staggerContainer}
-        >
-          <motion.h2 className={styles.heading} variants={fadeUpVariant}>
-            Архитектурная интеграция
-          </motion.h2>
-          
-          <motion.div className={styles.textBlock} variants={fadeUpVariant}>
-            <p>
-              Проект представляет собой коммерческое здание, которое легко вписывается в окружающую среду, подчеркивая уникальность местности[cite: 6]. 
-            </p>
-            <p>
-              Форма, пропорции и выбор облицовочных решений продиктованы стремлением создать не просто рабочее пространство, а функциональный узел на проспекте Аль-Фараби.
-            </p>
-          </motion.div>
-        </motion.div>
+        {/* Блок цифр (Метрики) */}
+        <div className={styles.metricsGroup}>
+          <h2 className={styles.sectionTitle}>Ключевые показатели</h2>
+          <div className={styles.metricsGrid}>
+            {metrics.map((item, idx) => (
+              <div key={idx} className={styles.metricItem}>
+                <div className={styles.metricValue}>
+                  {item.value} <span className={styles.metricUnit}>{item.unit}</span>
+                </div>
+                <div className={styles.metricLabel}>{item.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-        {/* Right Column: Engineering Specs (Semantic Description List) */}
-        <motion.div 
-          className={styles.specs}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-10%" }}
-          variants={staggerContainer}
-        >
-          <motion.div className={styles.specHeader} variants={fadeUpVariant}>
-            <span className={styles.monoTitle}>SPECIFICATION // REV.01</span>
-          </motion.div>
-
-          <motion.dl className={styles.specList} variants={staggerContainer}>
-            
-            <motion.div className={styles.specItem} variants={fadeUpVariant}>
-              <dt className={styles.specTerm}>Фасадная система</dt>
-              <dd className={styles.specDesc}>
-                Алюминиевая витражная система, композитные панели и гранит[cite: 6]. Современные энергоэффективные материалы на подвесной системе[cite: 6].
-              </dd>
-            </motion.div>
-
-            <motion.div className={styles.specItem} variants={fadeUpVariant}>
-              <dt className={styles.specTerm}>Несущий каркас</dt>
-              <dd className={styles.specDesc}>
-                Монолитный железобетон[cite: 6]. Фундамент плитный[cite: 6]. Перекрытия — монолитная ж/б плита[cite: 6].
-              </dd>
-            </motion.div>
-
-            <motion.div className={styles.specItem} variants={fadeUpVariant}>
-              <dt className={styles.specTerm}>Стеновое заполнение</dt>
-              <dd className={styles.specDesc}>
-                Газоблок толщиной 200мм с утеплением минераловатными плитами[cite: 6].
-              </dd>
-            </motion.div>
-
-            <motion.div className={styles.specItem} variants={fadeUpVariant}>
-              <dt className={styles.specTerm}>Безопасность</dt>
-              <dd className={styles.specDesc}>
-                Расчетная сейсмичность площадки строительства 9 баллов[cite: 6].
-              </dd>
-            </motion.div>
-
-          </motion.dl>
-        </motion.div>
+        {/* Блок архитектуры (Инженерия) */}
+        <div className={styles.engineeringGroup}>
+          <h2 className={styles.sectionTitle}>Архитектура и инженерия</h2>
+          <dl className={styles.engineeringList}>
+            {engineering.map((item, idx) => (
+              <div key={idx} className={styles.engineeringRow}>
+                <dt className={styles.engineeringTerm}>{item.term}</dt>
+                <dd className={styles.engineeringDesc}>{item.desc}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
 
       </div>
     </section>
