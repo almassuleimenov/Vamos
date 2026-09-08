@@ -1,170 +1,145 @@
 'use client';
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Send, CheckCircle2, AlertCircle } from 'lucide-react';
+import { useState, FormEvent, useRef, useEffect } from 'react';
 import styles from './CtaForm.module.css';
 
-type FormStatus = 'idle' | 'loading' | 'success' | 'error';
-
 export default function CtaForm() {
-  const [status, setStatus] = useState<FormStatus>('idle');
-  const [formData, setFormData] = useState({
-    name: '',
-    company: '',
-    phone: '',
-    message: ''
-  });
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  
+  const sectionRef = useRef<HTMLElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  // Плавное появление секции
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus('loading');
+  // Жесткая маска для телефона +7 (___) ___-__-__
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value;
+    // Оставляем только цифры
+    const numbers = input.replace(/\D/g, '');
+    
+    if (!numbers) {
+      setPhone('');
+      return;
+    }
 
-    try {
-      // Обращаемся к нашему безопасному внутреннему API
-      const response = await fetch('/api/leads', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-
-      if (!response.ok) throw new Error('Ошибка сервера при обработке запроса');
-
-      setStatus('success');
-      setFormData({ name: '', company: '', phone: '', message: '' });
+    // Автоматически подставляем 7, если вводят 8 или 9
+    let phoneValue = numbers;
+    if (['7', '8', '9'].includes(phoneValue[0])) {
+      if (phoneValue[0] === '8' || phoneValue[0] === '9') {
+        phoneValue = '7' + (phoneValue[0] === '9' ? '9' + phoneValue.slice(1) : phoneValue.slice(1));
+      }
       
-      // Возврат в исходное состояние через 5 секунд
-      setTimeout(() => setStatus('idle'), 5000);
-    } catch (error) {
-      console.error('Submit error:', error);
-      setStatus('error');
-      setTimeout(() => setStatus('idle'), 5000);
+      let formatted = '+7';
+      if (phoneValue.length > 1) formatted += ' (' + phoneValue.substring(1, 4);
+      if (phoneValue.length >= 5) formatted += ') ' + phoneValue.substring(4, 7);
+      if (phoneValue.length >= 8) formatted += '-' + phoneValue.substring(7, 9);
+      if (phoneValue.length >= 10) formatted += '-' + phoneValue.substring(9, 11);
+      
+      setPhone(formatted);
+    } else {
+      setPhone('+' + numbers);
     }
   };
 
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (phone.length < 18) return; // Простейшая валидация длины маски
+    
+    setIsSubmitting(true);
+    // Имитация отправки данных
+    await new Promise((resolve) => setTimeout(resolve, 1200));
+    setIsSubmitting(false);
+    setIsSuccess(true);
+  };
+
   return (
-    <section id="contact" className={styles.ctaSection}>
-      <div className={styles.grid}>
-        
-        {/* Информационный блок */}
-        <div className={styles.infoBlock}>
-          <div className={styles.metaRow}>
-            <span className={styles.monoBadge}>REQ_FORM // 01</span>
+    <section 
+      ref={sectionRef}
+      className={`${styles.cta} ${isVisible ? styles.visible : ''}`} 
+      id="contacts"
+    >
+      <div className={styles.container}>
+        <div className={styles.grid}>
+          
+          {/* Левая колонка: Текст и призыв */}
+          <div className={styles.textCol}>
+            <h2 className={styles.title}>Обсудить проект</h2>
+            <p className={styles.subtitle}>
+              Оставьте контактные данные, и мы свяжемся с вами для организации приватного показа здания и обсуждения коммерческих условий.
+            </p>
           </div>
-          <h2 className={styles.heading}>Инициация диалога</h2>
-          <p className={styles.description}>
-            Оставьте параметры вашего запроса. Управляющая компания свяжется с вами для предоставления закрытой финансовой модели и графика реализации объекта.
-          </p>
-          <div className={styles.legalMeta}>
-            <span className={styles.legalText}>
-              Отправляя форму, вы подтверждаете согласие с протоколом обработки данных.
-            </span>
+
+          {/* Правая колонка: Форма */}
+          <div className={styles.formCol}>
+            {isSuccess ? (
+              <div className={styles.successState}>
+                <div className={styles.successIcon}>+</div>
+                <h3 className={styles.successTitle}>Запрос принят</h3>
+                <p className={styles.successText}>Наш представитель свяжется с вами в ближайшее время.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className={styles.form}>
+                
+                <div className={styles.inputGroup}>
+                  <label htmlFor="name" className={styles.label}>Имя</label>
+                  <input
+                    type="text"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className={styles.input}
+                    placeholder="Ваше имя"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+
+                <div className={styles.inputGroup}>
+                  <label htmlFor="phone" className={styles.label}>Телефон</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    value={phone}
+                    onChange={handlePhoneChange}
+                    className={styles.input}
+                    placeholder="+7 (___) ___-__-__"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+
+                <button 
+                  type="submit" 
+                  className={styles.submitBtn}
+                  disabled={isSubmitting || phone.length < 18}
+                >
+                  {isSubmitting ? 'Отправка...' : 'Забронировать просмотр'}
+                </button>
+                
+                <p className={styles.disclaimer}>
+                  Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности.
+                </p>
+              </form>
+            )}
           </div>
+
         </div>
-
-        {/* Форма */}
-        <div className={styles.formContainer}>
-          <form className={styles.form} onSubmit={handleSubmit}>
-            
-            <div className={styles.inputGroup}>
-              <label htmlFor="name" className={styles.label}>Представитель / ФИО *</label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                className={styles.input}
-                placeholder="Иванов Иван"
-                value={formData.name}
-                onChange={handleChange}
-                disabled={status === 'loading' || status === 'success'}
-              />
-            </div>
-
-            <div className={styles.inputRow}>
-              <div className={styles.inputGroup}>
-                <label htmlFor="company" className={styles.label}>Организация</label>
-                <input
-                  id="company"
-                  name="company"
-                  type="text"
-                  className={styles.input}
-                  placeholder="Название компании"
-                  value={formData.company}
-                  onChange={handleChange}
-                  disabled={status === 'loading' || status === 'success'}
-                />
-              </div>
-
-              <div className={styles.inputGroup}>
-                <label htmlFor="phone" className={styles.label}>Контактный номер *</label>
-                <input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  required
-                  className={styles.input}
-                  placeholder="+7 (___) ___-__-__"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  disabled={status === 'loading' || status === 'success'}
-                />
-              </div>
-            </div>
-
-            <div className={styles.inputGroup}>
-              <label htmlFor="message" className={styles.label}>Предмет запроса</label>
-              <textarea
-                id="message"
-                name="message"
-                rows={3}
-                className={styles.textarea}
-                placeholder="Укажите интересующую площадь или цель обращения..."
-                value={formData.message}
-                onChange={handleChange}
-                disabled={status === 'loading' || status === 'success'}
-              />
-            </div>
-
-            <div className={styles.submitWrapper}>
-              <button 
-                type="submit" 
-                className={styles.submitBtn}
-                disabled={status === 'loading' || status === 'success'}
-                data-status={status}
-              >
-                <AnimatePresence mode="wait">
-                  {status === 'idle' && (
-                    <motion.span key="idle" className={styles.btnContent} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                      ОТПРАВИТЬ ЗАПРОС <Send size={16} strokeWidth={1.5} />
-                    </motion.span>
-                  )}
-                  {status === 'loading' && (
-                    <motion.span key="loading" className={styles.btnContent} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                      ОБРАБОТКА...
-                    </motion.span>
-                  )}
-                  {status === 'success' && (
-                    <motion.span key="success" className={styles.btnContent} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                      ЗАПРОС ПРИНЯТ <CheckCircle2 size={16} strokeWidth={1.5} />
-                    </motion.span>
-                  )}
-                  {status === 'error' && (
-                    <motion.span key="error" className={styles.btnContent} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                      ОШИБКА СЕТИ <AlertCircle size={16} strokeWidth={1.5} />
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </button>
-            </div>
-            
-          </form>
-        </div>
-
       </div>
     </section>
   );

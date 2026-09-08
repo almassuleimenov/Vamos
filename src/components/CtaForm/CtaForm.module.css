@@ -1,71 +1,73 @@
-.ctaSection {
-  background-color: var(--surface);
-  padding: var(--space-xxl) var(--space-lg);
-  border-bottom: 1px solid var(--border);
+.cta {
+  width: 100vw;
+  padding: var(--space-xxl) 0;
+  background-color: var(--surface); /* Немного выделяем фон секции (Жемчужный) */
+  border-bottom: 1px solid var(--cta-border);
+  color: var(--text);
+  overflow: hidden;
+}
+
+.container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
 }
 
 .grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-xl);
-  max-width: 1440px;
-  margin: 0 auto;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-xl) var(--space-md);
 }
 
-/* --- INFO BLOCK --- */
-.infoBlock {
+/* Левая часть: Заголовок */
+.textCol {
+  grid-column: 1 / 6;
   display: flex;
   flex-direction: column;
-  padding-right: var(--space-xl);
+  gap: var(--space-md);
+  
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s var(--cta-easing), transform 1s var(--cta-easing);
 }
 
-.metaRow {
-  margin-bottom: var(--space-md);
+.visible .textCol {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.monoBadge {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--accent);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.heading {
+.title {
   font-family: var(--font-display);
-  font-size: var(--text-xl);
+  font-size: var(--text-xxl);
   font-weight: 500;
-  color: var(--text);
-  margin: 0 0 var(--space-md) 0;
   letter-spacing: -0.02em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin: 0;
 }
 
-.description {
-  font-size: var(--text-md);
-  color: var(--muted);
+.subtitle {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
   line-height: 1.5;
-  margin: 0 0 var(--space-xl) 0;
-  max-width: 45ch;
-}
-
-.legalMeta {
-  margin-top: auto;
-  border-top: 1px solid var(--border);
-  padding-top: var(--space-md);
-}
-
-.legalText {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
   color: var(--muted);
-  line-height: 1.4;
+  max-width: 420px;
+  margin: 0;
 }
 
-/* --- FORM --- */
-.formContainer {
-  background-color: var(--bg);
-  border: 1px solid var(--border);
-  padding: var(--space-xl);
+/* Правая часть: Форма */
+.formCol {
+  grid-column: 7 / 13;
+  
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s var(--cta-easing) 0.2s, transform 1s var(--cta-easing) 0.2s;
+}
+
+.visible .formCol {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .form {
@@ -74,153 +76,157 @@
   gap: var(--space-lg);
 }
 
-.inputRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-md);
-}
-
 .inputGroup {
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
+  position: relative;
 }
 
+/* Скрываем label визуально, но оставляем для скринридеров */
 .label {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--text);
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
-.input,
-.textarea {
+.input {
+  font-family: var(--font-mono); /* Цифры и текст в стиле чертежа */
+  font-size: var(--text-lg);
+  color: var(--text);
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--border);
-  border-radius: 0;
-  padding: var(--space-xs) 0;
-  font-family: var(--font-display);
-  font-size: var(--text-base);
-  color: var(--text);
-  transition: border-color 0.3s ease;
+  border-bottom: 1px solid var(--cta-border);
+  padding: var(--space-sm) 0;
+  border-radius: 0; /* Строгая геометрия */
+  transition: border-color 0.4s var(--cta-easing);
   width: 100%;
 }
 
-.textarea {
-  resize: vertical;
-  min-height: 80px;
+.input::placeholder {
+  color: color-mix(in oklch, var(--text) 25%, transparent);
 }
 
-.input::placeholder,
-.textarea::placeholder {
-  color: color-mix(in oklch, var(--muted) 50%, transparent);
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-}
-
-.input:focus,
-.textarea:focus {
+.input:focus-visible {
   outline: none;
-  border-bottom-color: var(--accent);
+  border-bottom-color: var(--cta-focus);
 }
 
-.input:disabled,
-.textarea:disabled {
+.input:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* --- SUBMIT BUTTON --- */
-.submitWrapper {
-  margin-top: var(--space-sm);
-}
-
+/* Кнопка отправки */
 .submitBtn {
-  width: 100%;
-  padding: var(--space-md);
-  background-color: var(--text);
-  color: var(--bg);
-  border: none;
-  cursor: pointer;
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
+  font-family: var(--font-display);
+  font-size: var(--text-base);
   font-weight: 500;
-  letter-spacing: 0.05em;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 60px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--bg);
+  background-color: var(--text);
+  border: none;
+  padding: var(--space-md) var(--space-lg);
+  margin-top: var(--space-sm);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background-color 0.4s ease, transform 0.4s var(--cta-easing), opacity 0.4s ease;
+  width: 100%;
+  text-align: center;
 }
 
 .submitBtn:hover:not(:disabled) {
   background-color: var(--accent);
 }
 
-.submitBtn:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 4px;
+.submitBtn:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .submitBtn:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* Статусы кнопки */
-.submitBtn[data-status="loading"] {
-  background-color: var(--muted);
+.disclaimer {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-align: center;
+  margin-top: calc(var(--space-sm) * -1);
 }
 
-.submitBtn[data-status="success"] {
-  background-color: oklch(50% 0.1 150); /* Глубокий, строгий зеленый для успеха */
-}
-
-.submitBtn[data-status="error"] {
-  background-color: oklch(45% 0.15 25); /* Строгий красный для ошибки */
-}
-
-.btnContent {
+/* State: Успех */
+.successState {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100%;
+  min-height: 250px;
   gap: var(--space-sm);
+  animation: fadeIn 0.8s var(--cta-easing) forwards;
 }
 
-/* --- АДАПТИВ --- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.successIcon {
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  color: var(--text);
+  margin-bottom: var(--space-sm);
+}
+
+.successTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 500;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.successText {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  color: var(--muted);
+  margin: 0;
+}
+
+/* Адаптив */
 @media (max-width: 1024px) {
-  .grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-xl);
+  .textCol {
+    grid-column: 1 / 13;
   }
-  .infoBlock {
-    padding-right: 0;
-  }
-  .legalMeta {
-    margin-top: var(--space-md);
+  .formCol {
+    grid-column: 1 / 13;
+    max-width: 600px;
   }
 }
 
 @media (max-width: 768px) {
-  .ctaSection {
-    padding: var(--space-xl) var(--space-md);
+  .container {
+    padding: 0 var(--space-md);
   }
-  .formContainer {
-    padding: var(--space-lg) var(--space-md);
-  }
-  .inputRow {
-    grid-template-columns: 1fr;
+  .grid {
     gap: var(--space-lg);
   }
-}
-
-@media (max-width: 380px) {
-  .ctaSection {
-    padding: var(--space-lg) var(--space-sm);
+  .title {
+    font-size: var(--text-xl);
   }
-  .formContainer {
-    padding: var(--space-md) var(--space-sm);
-    border-left: none;
-    border-right: none;
+  .input {
+    font-size: var(--text-md);
+  }
+  .submitBtn {
+    padding: var(--space-sm) var(--space-md);
   }
 }

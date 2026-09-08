@@ -1,57 +1,76 @@
 'use client';
 
-import React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './Location.module.css';
 
+const advantages = [
+  { time: '01', unit: 'мин', desc: 'Удобный выезд на главную магистраль — проспект Аль-Фараби' },
+  { time: '04', unit: 'мин', desc: 'На авто до ТРЦ Mega Center Alma-Ata' },
+  { time: '07', unit: 'мин', desc: 'До Esentai Mall и финансового кластера города' },
+  { time: '—', unit: 'паркинг', desc: 'Места непосредственно у здания и комфортный подъезд спецтехники' },
+];
+
 export default function Location() {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="location" className={styles.location}>
-      <header className={styles.header}>
-        <h2 className={styles.heading}>Интеграция в городскую среду</h2>
-      </header>
-
+    <section 
+      ref={sectionRef}
+      className={`${styles.location} ${isVisible ? styles.visible : ''}`} 
+      id="location"
+    >
       <div className={styles.grid}>
-        {/* Блок аналитики и данных */}
-        <div className={styles.infoBlock}>
-          <div className={styles.metaRow}>
-            <span className={styles.metaLabel}>GEO ZONE</span>
-            <span className={styles.metaValue}>ALMATY // BOSTANDYK</span>
+        
+        {/* Левая колонка: Компактный контент */}
+        <div className={styles.content}>
+          <div className={styles.header}>
+            <span className={styles.eyebrow}>Локация</span>
+            <h2 className={styles.title}>Аль-Фараби, 75/2</h2>
+            <p className={styles.subtitle}>
+              Первая линия. Стратегический доступ к ключевым точкам Алматы.
+            </p>
           </div>
-          
-          <address className={styles.address}>
-            г. Алматы, Бостандыкский район, <br />
-            проспект Аль-Фараби, участок 75/2[cite: 1, 6, 7]
-          </address>
 
-          <div className={styles.infrastructure}>
-            <h3 className={styles.infraTitle}>Локационные преимущества</h3>
-            <ul className={styles.infraList}>
-              <li className={styles.infraItem}>
-                <span className={styles.infraDot} aria-hidden="true" />
-                Первая линия проспекта Аль-Фараби
-              </li>
-              <li className={styles.infraItem}>
-                <span className={styles.infraDot} aria-hidden="true" />
-                Прямой доступ к главному деловому кластеру
-              </li>
-              <li className={styles.infraItem}>
-                <span className={styles.infraDot} aria-hidden="true" />
-                Высокий транзитный и пешеходный трафик
-              </li>
-            </ul>
+          <div className={styles.advantages}>
+            {advantages.map((adv, idx) => (
+              <div key={idx} className={styles.advantageItem}>
+                <div className={styles.advMetric}>
+                  <span className={styles.advTime}>{adv.time}</span>
+                  <span className={styles.advUnit}>{adv.unit}</span>
+                </div>
+                <p className={styles.advDesc}>{adv.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Чистая интерактивная зона (Соблюдено правило "ничего не налаживать") */}
-        <div className={styles.mapContainer}>
+        {/* Правая колонка: Карта без полей (Edge-to-Edge) */}
+        <div className={styles.mapWrapper}>
           <iframe 
             src="https://yandex.ru/map-widget/v1/?um=constructor%3Aada5da585ebbb52d3fa1f5891ed2c2bd36e31f458c17ca3e374b11a4efb8a3b9&amp;source=constructor" 
-            title="Расположение Института коммуникации на карте"
-            className={styles.mapIframe}
-            frameBorder="0"
-            allowFullScreen
+            className={styles.iframe}
+            title="Расположение WAMOS"
+            loading="lazy"
           />
+          <div className={styles.mapOverlay} />
         </div>
+
       </div>
     </section>
   );
