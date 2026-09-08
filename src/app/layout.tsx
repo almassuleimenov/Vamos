@@ -4,6 +4,7 @@ import { JetBrains_Mono } from 'next/font/google';
 import SmoothScroll from '@/ui/SmoothScroll/SmoothScroll';
 import './globals.css';
 import Preloader from '@/components/Preloader/Preloader';
+import Navbar from '@/components/Navbar/Navbar';
 
 // Основной гротеск: используем локальный вариативный woff2
 const fontDisplay = localFont({
@@ -48,6 +49,7 @@ export default function RootLayout({
         className={`${fontDisplay.variable} ${fontMono.variable} antialiased`}
       >
         <Preloader/>
+        <Navbar/>
         <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>

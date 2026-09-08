@@ -1,0 +1,268 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: var(--nav-height);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  
+  background-color: transparent;
+  border-bottom: 1px solid transparent;
+  
+  transition: background-color 0.4s var(--nav-easing),
+              border-color 0.4s var(--nav-easing),
+              backdrop-filter 0.4s var(--nav-easing);
+}
+
+.scrolled {
+  background-color: var(--nav-bg-scrolled);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom-color: var(--nav-border);
+}
+
+.container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+/* Привязка к 12-колоночной сетке для идеальной оси со Спецификациями и Галереей */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-md);
+  align-items: center;
+}
+
+.logoCol {
+  grid-column: 1 / 4;
+}
+
+.navCol {
+  grid-column: 4 / 10;
+  display: flex;
+  justify-content: center;
+  gap: var(--space-xl);
+}
+
+.actionCol {
+  grid-column: 10 / 13;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* Элементы */
+.logo {
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.navLink {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--muted);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: color 0.4s var(--nav-easing);
+  position: relative;
+}
+
+.navLink:hover {
+  color: var(--text);
+}
+
+/* Деликатный индикатор ховера */
+.navLink::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: var(--text);
+  transition: width 0.4s var(--nav-easing);
+}
+
+.navLink:hover::after {
+  width: 100%;
+}
+
+.phoneLink {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text);
+  text-decoration: none;
+  transition: opacity 0.4s var(--nav-easing);
+}
+
+.phoneLink:hover {
+  opacity: 0.6;
+}
+
+/* --- Burger Button (Mobile) --- */
+.burgerBtn {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 1001; /* Поверх мобильного меню */
+  padding: 0;
+}
+
+.burgerLine {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: var(--text);
+  transition: transform 0.4s var(--nav-easing), opacity 0.4s var(--nav-easing);
+}
+
+.burgerActive .burgerLine:nth-child(1) {
+  transform: translateY(5.5px) rotate(45deg);
+}
+
+.burgerActive .burgerLine:nth-child(2) {
+  transform: translateY(-5.5px) rotate(-45deg);
+}
+
+/* --- Mobile Menu Overlay --- */
+.mobileOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background-color: var(--bg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-xl) var(--space-lg);
+  
+  opacity: 0;
+  pointer-events: none;
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.7s var(--nav-easing), opacity 0.7s ease;
+}
+
+.mobileOpen {
+  opacity: 1;
+  pointer-events: auto;
+  clip-path: inset(0 0 0 0);
+}
+
+.mobileContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  max-height: 70vh;
+}
+
+.mobileNav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  margin-top: 10vh;
+}
+
+.mobileNavLink {
+  font-family: var(--font-display);
+  font-size: var(--text-xxl);
+  font-weight: 400;
+  color: var(--text);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s var(--nav-easing);
+}
+
+.mobileOpen .mobileNavLink {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mobileFooter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease 0.4s, transform 0.5s var(--nav-easing) 0.4s;
+}
+
+.mobileOpen .mobileFooter {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mobileFooterLabel {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.mobilePhone, .mobileEmail {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  color: var(--text);
+  text-decoration: none;
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+  .navCol {
+    display: none; /* Прячем десктопную навигацию на планшетах */
+  }
+  
+  .logoCol {
+    grid-column: 1 / 6;
+  }
+  
+  .actionCol {
+    grid-column: 6 / 13;
+  }
+
+  .burgerBtn {
+    display: flex;
+    margin-left: var(--space-lg);
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 var(--space-md);
+  }
+  
+  .grid {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .phoneLink {
+    display: none; /* Прячем номер в хедере на мобилке, он есть в меню */
+  }
+  
+  .burgerBtn {
+    margin-left: 0;
+  }
+  
+  .mobileOverlay {
+    padding: var(--space-xl) var(--space-md);
+  }
+}
