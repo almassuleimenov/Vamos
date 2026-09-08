@@ -1,103 +1,76 @@
 .hero {
-  /* Локальные переменные только для этого блока — никуда больше добавлять не нужно */
-  --hero-overlay-dark: oklch(15% 0.01 250 / 0.5);
-  --hero-overlay-light: oklch(15% 0.01 250 / 0.2);
-  --hero-text: oklch(99% 0.002 90);
-  --hero-title-size: clamp(5rem, 15vw, 14rem);
-  --hero-easing: cubic-bezier(0.16, 1, 0.3, 1);
-
-  position: relative;
   width: 100vw;
-  height: 100vh;
+  height: 100svh;
   min-height: 600px;
+  display: grid;
+  /* Асимметричная сетка 5 к 7 колонкам */
+  grid-template-columns: 5fr 7fr;
+  background-color: var(--bg);
+  border-bottom: 1px solid var(--border);
   overflow: hidden;
-  background-color: oklch(15% 0.01 250);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: var(--hero-text);
 }
 
-/* Video Canvas */
-.videoWrapper {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-
-.video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1.05);
-  transition: transform 2.4s var(--hero-easing);
-  will-change: transform;
-}
-
-.mounted .video {
-  transform: scale(1);
-}
-
-/* Градиентный оверлей поверх видео для читаемости текста */
-.overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  background: linear-gradient(
-    to bottom,
-    var(--hero-overlay-dark) 0%,
-    var(--hero-overlay-light) 40%,
-    var(--hero-overlay-light) 60%,
-    var(--hero-overlay-dark) 100%
-  );
-}
-
-/* Typography Container */
+/* Контентный блок */
 .content {
   position: relative;
-  z-index: 10;
+  z-index: 2;
+  background-color: var(--bg);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  width: 100%;
-  padding: var(--space-md);
+  justify-content: flex-end; /* Прижимаем контент вниз, как в чертежах */
+  padding: var(--space-xl) var(--space-lg);
+  border-right: 1px solid var(--border);
 }
 
-/* Main Title */
+.textWrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Title */
 .title {
   font-family: var(--font-display);
-  font-size: var(--hero-title-size);
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 0.9;
+  /* Используем твой токен из globals, он идеален по размеру (до 5rem) */
+  font-size: var(--text-hero);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 0.85;
   text-transform: uppercase;
+  color: var(--text);
   margin: 0;
   
-  /* Анимация появления */
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateY(20px);
   transition: opacity 1.2s var(--hero-easing) 0.2s,
               transform 1.2s var(--hero-easing) 0.2s;
+}
+
+/* Divider */
+.divider {
+  width: 0;
+  height: 1px;
+  background-color: var(--border);
+  transition: width 1s var(--hero-easing) 0.6s;
+}
+
+.mounted .divider {
+  width: 100%;
+  max-width: 120px;
 }
 
 /* Subtitle */
 .subtitle {
   font-family: var(--font-display);
-  font-size: var(--text-md);
-  font-weight: 300;
-  line-height: 1.4;
-  color: color-mix(in oklch, var(--hero-text) 80%, transparent);
-  margin-top: var(--space-md);
-  max-width: 600px;
+  font-size: var(--text-base);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 480px;
+  margin: 0;
 
-  /* Анимация появления с задержкой */
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(10px);
   transition: opacity 1.2s var(--hero-easing) 0.4s,
               transform 1.2s var(--hero-easing) 0.4s;
 }
@@ -108,12 +81,68 @@
   transform: translateY(0);
 }
 
-/* Адаптив для телефона */
+/* Медиа блок */
+.media {
+  position: relative;
+  background-color: var(--muted);
+  overflow: hidden;
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(var(--hero-video-scale));
+  transition: transform 2.4s var(--hero-easing);
+  will-change: transform;
+}
+
+.mounted .video {
+  transform: scale(1);
+}
+
+/* Тонкая граница внутри видео-контейнера */
+.mediaOverlay {
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 1px 0 0 var(--border);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Адаптив */
+@media (max-width: 1024px) {
+  .hero {
+    grid-template-columns: 1fr 1fr; /* 50/50 на планшетах */
+  }
+  
+  .content {
+    padding: var(--space-lg) var(--space-md);
+  }
+}
+
 @media (max-width: 768px) {
-  .subtitle {
-    font-size: var(--text-base);
-    br {
-      display: none;
-    }
+  .hero {
+    display: flex;
+    flex-direction: column-reverse; /* На мобилке текст внизу, видео сверху */
+    height: auto;
+    min-height: 100svh;
+  }
+
+  .content {
+    flex: 1;
+    min-height: 40vh;
+    border-right: none;
+    padding: var(--space-md);
+    justify-content: center; /* Центрируем по вертикали на мобилке */
+  }
+
+  .media {
+    height: 50vh;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .subtitle br {
+    display: none; /* Убираем жесткий перенос на узких экранах */
   }
 }

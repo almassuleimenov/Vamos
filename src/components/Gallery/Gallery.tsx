@@ -1,106 +1,94 @@
 'use client';
 
-import React, { useRef, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { motion, useScroll, useTransform } from 'framer-motion';
 import styles from './Gallery.module.css';
 
-const renders = [
+const images = [
   {
-    id: '01',
     src: '/IMG_5076.JPG.jpeg',
-    title: 'ПЕРСПЕКТИВА // ЮГО-ВОСТОК',
-    desc: 'Интеграция в ландшафт пр. Аль-Фараби'
+    alt: 'Главный фасад с открытой террасой и витражами',
+    caption: 'ФАСАД И ВИТРАЖИ / 1 ЭТАЖ',
+    layout: 'hero', // Большое изображение
   },
   {
-    id: '02',
     src: '/IMG_5077.JPG.jpeg',
-    title: 'ФАСАДНАЯ СИСТЕМА // ДЕТАЛЬ',
-    desc: 'Алюминиевые витражи и гранитная облицовка'
+    alt: 'Угловой вид с коммерческими витринами',
+    caption: 'РИТЕЙЛ ЗОНА / УГЛОВОЙ ВИД',
+    layout: 'square', 
   },
   {
-    id: '03',
     src: '/IMG_5078.JPG.jpeg',
-    title: 'ВХОДНАЯ ГРУППА',
-    desc: 'Организация пешеходного потока'
+    alt: 'Вид с высоты птичьего полета на плоскую кровлю',
+    caption: 'ЭКСПЛУАТИРУЕМАЯ КРОВЛЯ / +11.700',
+    layout: 'square',
   },
   {
-    id: '04',
     src: '/IMG_5079.JPG.jpeg',
-    title: 'ПАРКИНГ И ТРАНЗИТ // СЕВЕР',
-    desc: 'Въездная зона и технический доступ'
+    alt: 'Входная группа со стороны пешеходной зоны',
+    caption: 'ВХОДНАЯ ГРУППА / БЛАГОУСТРОЙСТВО',
+    layout: 'landscape',
   },
   {
-    id: '05',
     src: '/IMG_5080.JPG.jpeg',
-    title: 'ЭКСТЕРЬЕР // ВЕЧЕРНИЙ СВЕТ',
-    desc: 'Сценарий архитектурного освещения'
-  }
+    alt: 'Детали архитектурного фасада здания',
+    caption: 'АРХИТЕКТУРНЫЕ ДЕТАЛИ',
+    layout: 'landscape',
+  },
 ];
 
 export default function Gallery() {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
-  // Простая проверка на мобилку для отключения тяжелого параллакса
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
   }, []);
 
-  const { scrollYProgress } = useScroll({
-    target: trackRef,
-  });
-
-  // Для 5 слайдов двигаем контейнер так, чтобы последний слайд оказался в поле зрения.
-  // Используем CSS calc() в стилях для точного позиционирования.
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-80%"]);
-
   return (
-    <section className={styles.galleryWrapper} ref={trackRef}>
-      <div className={styles.stickyContainer}>
+    <section ref={sectionRef} className={`${styles.gallery} ${isVisible ? styles.visible : ''}`} id="gallery">
+      <div className={styles.container}>
         
-        {/* Информационный overlay */}
-        <header className={styles.galleryHeader}>
-          <h2 className={styles.heading}>Визуализация объекта</h2>
-          <div className={styles.meta}>
-            <span className={styles.metaLabel}>СТАТУС</span>
-            <span className={styles.metaValue}>RENDERED // 2026</span>
-          </div>
-        </header>
+        <div className={styles.header}>
+          <h2 className={styles.title}>Экстерьер и детали</h2>
+          <p className={styles.subtitle}>Визуализация архитектурного решения</p>
+        </div>
 
-        {/* 
-          На десктопе используем framer-motion для привязки к скроллу.
-          На мобилках отдаем управление нативному overflow-x (через CSS).
-        */}
-        <motion.div 
-          className={styles.slider} 
-          style={isMobile ? {} : { x }}
-        >
-          {renders.map((item) => (
-            <figure key={item.id} className={styles.slide}>
-              <div className={styles.imageBox}>
+        <div className={styles.grid}>
+          {images.map((img, idx) => (
+            <figure 
+              key={idx} 
+              className={`${styles.figure} ${styles[img.layout]}`}
+            >
+              <div className={styles.imageWrapper}>
                 <Image
-                  src={item.src}
-                  alt={`Рендер ${item.title}`}
+                  src={img.src}
+                  alt={img.alt}
                   fill
-                  sizes="(max-width: 768px) 90vw, 70vw"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   className={styles.image}
-                  priority={item.id === '01'} // Грузим первую сразу
+                  priority={img.layout === 'hero'}
                 />
+                <div className={styles.overlay} />
               </div>
               <figcaption className={styles.caption}>
-                <div className={styles.captionTop}>
-                  <span className={styles.slideId}>{item.id}</span>
-                  <span className={styles.slideTitle}>{item.title}</span>
-                </div>
-                <p className={styles.slideDesc}>{item.desc}</p>
+                <span>{String(idx + 1).padStart(2, '0')}</span>
+                <span>{img.caption}</span>
               </figcaption>
             </figure>
           ))}
-        </motion.div>
+        </div>
         
       </div>
     </section>

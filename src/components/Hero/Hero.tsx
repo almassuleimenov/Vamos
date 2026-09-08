@@ -12,9 +12,20 @@ export default function Hero() {
 
   return (
     <section className={`${styles.hero} ${isMounted ? styles.mounted : ''}`}>
-      {/* Background Video */}
-      <div className={styles.videoWrapper}>
-        <div className={styles.overlay} />
+      {/* Левая панель: Архитектурная сетка и контент */}
+      <div className={styles.content}>
+        <div className={styles.textWrap}>
+          <h1 className={styles.title}>WAMOS</h1>
+          <div className={styles.divider} />
+          <p className={styles.subtitle}>
+            Офисы класса А и торговые площади на первой линии<br />
+            проспекта Аль-Фараби в Алматы
+          </p>
+        </div>
+      </div>
+
+      {/* Правая панель: Видео */}
+      <div className={styles.media}>
         <video
           autoPlay
           loop
@@ -25,15 +36,8 @@ export default function Hero() {
         >
           <source src="/Hero.mp4" type="video/mp4" />
         </video>
-      </div>
-
-      {/* Content */}
-      <div className={styles.content}>
-        <h1 className={styles.title}>WAMOS</h1>
-        <p className={styles.subtitle}>
-          Офисы класса А и торговые площади на первой линии<br />
-          проспекта Аль-Фараби в Алматы
-        </p>
+        {/* Деликатный внутренний контур для идеального стыка */}
+        <div className={styles.mediaOverlay} />
       </div>
     </section>
   );
