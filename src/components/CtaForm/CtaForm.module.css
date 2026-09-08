@@ -1,10 +1,10 @@
 .cta {
   width: 100vw;
   padding: var(--space-xxl) 0;
-  background-color: var(--surface); /* Немного выделяем фон секции (Жемчужный) */
+  background-color: var(--surface);
   border-bottom: 1px solid var(--cta-border);
   color: var(--text);
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .container {
@@ -14,27 +14,27 @@
   padding: 0 var(--space-lg);
 }
 
+/* Сетка: 5 к 6 с отступом (justify-content) для идеального баланса */
 .grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: var(--space-xl) var(--space-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-xl);
 }
 
-/* Левая часть: Заголовок */
+/* --- Левая часть: Заголовок --- */
 .textCol {
-  grid-column: 1 / 6;
+  flex: 0 1 480px; /* Фиксированная максимальная ширина контента */
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
-  
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 1s var(--cta-easing), transform 1s var(--cta-easing);
 }
 
-.visible .textCol {
-  opacity: 1;
-  transform: translateY(0);
+.mask {
+  overflow: hidden;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+  will-change: transform;
 }
 
 .title {
@@ -45,6 +45,7 @@
   text-transform: uppercase;
   line-height: 1;
   margin: 0;
+  will-change: transform;
 }
 
 .subtitle {
@@ -52,28 +53,22 @@
   font-size: var(--text-base);
   line-height: 1.5;
   color: var(--muted);
-  max-width: 420px;
   margin: 0;
+  will-change: transform;
 }
 
-/* Правая часть: Форма */
+/* --- Правая часть: Форма --- */
 .formCol {
-  grid-column: 7 / 13;
-  
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 1s var(--cta-easing) 0.2s, transform 1s var(--cta-easing) 0.2s;
-}
-
-.visible .formCol {
-  opacity: 1;
-  transform: translateY(0);
+  flex: 0 1 440px; /* Сузили форму. 440px выглядит плотно и дорого */
+  width: 100%;
+  will-change: transform, opacity;
 }
 
 .form {
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
+  width: 100%;
 }
 
 .inputGroup {
@@ -83,7 +78,7 @@
   position: relative;
 }
 
-/* Скрываем label визуально, но оставляем для скринридеров */
+/* Hidden Label (a11y) */
 .label {
   position: absolute;
   width: 1px;
@@ -97,30 +92,55 @@
 }
 
 .input {
-  font-family: var(--font-mono); /* Цифры и текст в стиле чертежа */
+  font-family: var(--font-mono);
   font-size: var(--text-lg);
   color: var(--text);
   background: transparent;
   border: none;
+  /* Статичная прозрачная линия */
   border-bottom: 1px solid var(--cta-border);
   padding: var(--space-sm) 0;
-  border-radius: 0; /* Строгая геометрия */
-  transition: border-color 0.4s var(--cta-easing);
+  border-radius: 0;
   width: 100%;
+  transition: opacity 0.3s ease;
 }
 
 .input::placeholder {
   color: color-mix(in oklch, var(--text) 25%, transparent);
+  transition: color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .input:focus-visible {
   outline: none;
-  border-bottom-color: var(--cta-focus);
+}
+
+.input:focus-visible::placeholder {
+  color: transparent;
 }
 
 .input:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* GPU-линия фокуса (Выезжает из центра) */
+.inputFocusLine {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--text);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+  pointer-events: none;
+}
+
+/* Срабатывает, когда input внутри group в фокусе */
+.inputGroup:focus-within .inputFocusLine {
+  transform: scaleX(1);
 }
 
 /* Кнопка отправки */
@@ -137,21 +157,24 @@
   margin-top: var(--space-sm);
   cursor: pointer;
   border-radius: var(--radius-sm);
-  transition: background-color 0.4s ease, transform 0.4s var(--cta-easing), opacity 0.4s ease;
   width: 100%;
   text-align: center;
+  
+  /* transform управляется Framer Motion, здесь только цвета */
+  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              opacity 0.4s ease;
+  will-change: transform;
 }
 
-.submitBtn:hover:not(:disabled) {
-  background-color: var(--accent);
-}
-
-.submitBtn:active:not(:disabled) {
-  transform: scale(0.98);
+/* Hover только для десктопов */
+@media (hover: hover) and (pointer: fine) {
+  .submitBtn:hover:not(:disabled) {
+    background-color: color-mix(in oklch, var(--text) 80%, var(--bg));
+  }
 }
 
 .submitBtn:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
@@ -163,28 +186,23 @@
   margin-top: calc(var(--space-sm) * -1);
 }
 
-/* State: Успех */
+/* --- State: Успех --- */
 .successState {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
   height: 100%;
-  min-height: 250px;
+  min-height: 220px;
   gap: var(--space-sm);
-  animation: fadeIn 0.8s var(--cta-easing) forwards;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  will-change: transform, opacity;
 }
 
 .successIcon {
   font-family: var(--font-mono);
   font-size: var(--text-xl);
   color: var(--text);
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-xs);
 }
 
 .successTitle {
@@ -202,23 +220,33 @@
   margin: 0;
 }
 
-/* Адаптив */
-@media (max-width: 1024px) {
-  .textCol {
-    grid-column: 1 / 13;
+/* --- Fallback для Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+  .inputFocusLine {
+    transition: none !important;
   }
+}
+
+/* --- Адаптив --- */
+@media (max-width: 1024px) {
+  .grid {
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+  
+  .textCol, .formCol {
+    flex: 1 1 auto;
+    max-width: 100%;
+  }
+
   .formCol {
-    grid-column: 1 / 13;
-    max-width: 600px;
+    max-width: 600px; /* На планшете форма чуть шире, но не во весь экран */
   }
 }
 
 @media (max-width: 768px) {
   .container {
     padding: 0 var(--space-md);
-  }
-  .grid {
-    gap: var(--space-lg);
   }
   .title {
     font-size: var(--text-xl);

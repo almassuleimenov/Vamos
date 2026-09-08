@@ -1,7 +1,13 @@
 'use client';
 
-import { useState, FormEvent, useRef, useEffect } from 'react';
+import { useState, FormEvent } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import styles from './CtaForm.module.css';
+
+// Кинематографичная кривая для входов
+const customEase = [0.16, 1, 0.3, 1] as any;
+// Упругая пружина для интерактивных элементов (кнопки)
+const tapSpring = { type: 'spring', mass: 0.8, stiffness: 250, damping: 25 } as any;
 
 export default function CtaForm() {
   const [name, setName] = useState('');
@@ -9,28 +15,11 @@ export default function CtaForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   
-  const sectionRef = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  // Плавное появление секции
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.15 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
+  const shouldReduceMotion = useReducedMotion();
 
   // Жесткая маска для телефона +7 (___) ___-__-__
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
-    // Оставляем только цифры
     const numbers = input.replace(/\D/g, '');
     
     if (!numbers) {
@@ -38,7 +27,6 @@ export default function CtaForm() {
       return;
     }
 
-    // Автоматически подставляем 7, если вводят 8 или 9
     let phoneValue = numbers;
     if (['7', '8', '9'].includes(phoneValue[0])) {
       if (phoneValue[0] === '8' || phoneValue[0] === '9') {
@@ -59,87 +47,149 @@ export default function CtaForm() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (phone.length < 18) return; // Простейшая валидация длины маски
+    if (phone.length < 18) return; 
     
     setIsSubmitting(true);
-    // Имитация отправки данных
     await new Promise((resolve) => setTimeout(resolve, 1200));
     setIsSubmitting(false);
     setIsSuccess(true);
   };
 
+  // Варианты для контейнера (каскад)
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.1 },
+    },
+  };
+
+  // Mask Reveal для типографики
+  const textVariants = {
+    hidden: { y: shouldReduceMotion ? 0 : '100%', opacity: shouldReduceMotion ? 0 : 1 },
+    show: { 
+      y: '0%', 
+      opacity: 1, 
+      transition: { duration: 1.2, ease: customEase } 
+    },
+  } as any;
+
+  // Варианты для смены состояний формы (Form <-> Success)
+  const formStateVariants = {
+    initial: { opacity: 0, scale: shouldReduceMotion ? 1 : 0.98, y: 10 },
+    animate: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.6, ease: customEase } },
+    exit: { opacity: 0, scale: shouldReduceMotion ? 1 : 0.98, y: -10, transition: { duration: 0.4, ease: 'easeOut' } },
+  } as any;
+
   return (
-    <section 
-      ref={sectionRef}
-      className={`${styles.cta} ${isVisible ? styles.visible : ''}`} 
-      id="contacts"
-    >
+    <section className={styles.cta} id="contacts">
       <div className={styles.container}>
-        <div className={styles.grid}>
+        <motion.div 
+          className={styles.grid}
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
+        >
           
-          {/* Левая колонка: Текст и призыв */}
+          {/* Левая колонка: Текст */}
           <div className={styles.textCol}>
-            <h2 className={styles.title}>Обсудить проект</h2>
-            <p className={styles.subtitle}>
-              Оставьте контактные данные, и мы свяжемся с вами для организации приватного показа здания и обсуждения коммерческих условий.
-            </p>
+            <div className={styles.mask}>
+              <motion.h2 variants={textVariants} className={styles.title}>
+                Обсудить проект
+              </motion.h2>
+            </div>
+            <div className={styles.mask}>
+              <motion.p variants={textVariants} className={styles.subtitle}>
+                Оставьте контактные данные, и мы свяжемся с вами для организации 
+                приватного показа здания и обсуждения коммерческих условий.
+              </motion.p>
+            </div>
           </div>
 
           {/* Правая колонка: Форма */}
-          <div className={styles.formCol}>
-            {isSuccess ? (
-              <div className={styles.successState}>
-                <div className={styles.successIcon}>+</div>
-                <h3 className={styles.successTitle}>Запрос принят</h3>
-                <p className={styles.successText}>Наш представитель свяжется с вами в ближайшее время.</p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className={styles.form}>
-                
-                <div className={styles.inputGroup}>
-                  <label htmlFor="name" className={styles.label}>Имя</label>
-                  <input
-                    type="text"
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className={styles.input}
-                    placeholder="Ваше имя"
-                    required
-                    disabled={isSubmitting}
-                  />
-                </div>
-
-                <div className={styles.inputGroup}>
-                  <label htmlFor="phone" className={styles.label}>Телефон</label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    value={phone}
-                    onChange={handlePhoneChange}
-                    className={styles.input}
-                    placeholder="+7 (___) ___-__-__"
-                    required
-                    disabled={isSubmitting}
-                  />
-                </div>
-
-                <button 
-                  type="submit" 
-                  className={styles.submitBtn}
-                  disabled={isSubmitting || phone.length < 18}
+          <motion.div 
+            className={styles.formCol}
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 1, ease: customEase, delay: 0.2 }}
+          >
+            <AnimatePresence mode="wait">
+              {isSuccess ? (
+                <motion.div 
+                  key="success"
+                  className={styles.successState}
+                  variants={formStateVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
                 >
-                  {isSubmitting ? 'Отправка...' : 'Забронировать просмотр'}
-                </button>
-                
-                <p className={styles.disclaimer}>
-                  Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности.
-                </p>
-              </form>
-            )}
-          </div>
+                  <div className={styles.successIcon}>+</div>
+                  <h3 className={styles.successTitle}>Запрос принят</h3>
+                  <p className={styles.successText}>Наш представитель свяжется с вами в ближайшее время.</p>
+                </motion.div>
+              ) : (
+                <motion.form 
+                  key="form"
+                  onSubmit={handleSubmit} 
+                  className={styles.form}
+                  variants={formStateVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                >
+                  
+                  <div className={styles.inputGroup}>
+                    <label htmlFor="name" className={styles.label}>Имя</label>
+                    <input
+                      type="text"
+                      id="name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className={styles.input}
+                      placeholder="Ваше имя"
+                      required
+                      disabled={isSubmitting}
+                    />
+                    {/* GPU-анимированная линия фокуса */}
+                    <div className={styles.inputFocusLine} />
+                  </div>
 
-        </div>
+                  <div className={styles.inputGroup}>
+                    <label htmlFor="phone" className={styles.label}>Телефон</label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      value={phone}
+                      onChange={handlePhoneChange}
+                      className={styles.input}
+                      placeholder="+7 (___) ___-__-__"
+                      required
+                      disabled={isSubmitting}
+                    />
+                    <div className={styles.inputFocusLine} />
+                  </div>
+
+                  <motion.button 
+                    type="submit" 
+                    className={styles.submitBtn}
+                    disabled={isSubmitting || phone.length < 18}
+                    whileTap={isSubmitting || phone.length < 18 ? {} : { scale: 0.97 }}
+                    transition={tapSpring}
+                  >
+                    {isSubmitting ? 'Отправка...' : 'Забронировать просмотр'}
+                  </motion.button>
+                  
+                  <p className={styles.disclaimer}>
+                    Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности.
+                  </p>
+                </motion.form>
+              )}
+            </AnimatePresence>
+          </motion.div>
+
+        </motion.div>
       </div>
     </section>
   );
