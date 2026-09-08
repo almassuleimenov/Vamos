@@ -1,0 +1,67 @@
+.preloader {
+  /* ТЕ САМЫЕ ПОТЕРЯННЫЕ ТОКЕНЫ: */
+  --preloader-easing-reveal: cubic-bezier(0.16, 1, 0.3, 1);
+  --preloader-easing-exit: cubic-bezier(0.85, 0, 0.15, 1);
+
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background-color: var(--bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  /* Анимация ухода всей панели вверх */
+  transition: transform 1.2s var(--preloader-easing-exit);
+  will-change: transform;
+}
+
+.loaded {
+  transform: translateY(-100%);
+}
+
+/* Обертка (маска) для эффекта проявления текста из-под невидимой линии */
+.textWrapper {
+  overflow: hidden;
+  padding: 10px; /* Буфер для выносных элементов шрифта */
+}
+
+/* Само слово */
+.text {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 12vw, 10rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  line-height: 0.9;
+  text-transform: uppercase;
+
+  /* Стартовое состояние (спрятано внизу) */
+  transform: translateY(110%);
+  opacity: 0;
+  
+  /* Появление при загрузке компонента */
+  animation: textReveal 1.2s var(--preloader-easing-reveal) 0.2s forwards;
+}
+
+/* Поведение текста, когда панель уезжает наверх */
+.loaded .text {
+  /* Обратный параллакс: панель едет вверх, а текст слегка оседает вниз, растворяясь */
+  transform: translateY(60%);
+  opacity: 0;
+  transition: transform 1.2s var(--preloader-easing-exit), 
+              opacity 0.8s ease;
+}
+
+/* Keyframes проявления */
+@keyframes textReveal {
+  0% {
+    transform: translateY(110%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
