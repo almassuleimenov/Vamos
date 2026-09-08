@@ -3,24 +3,27 @@
   top: 0;
   left: 0;
   width: 100vw;
-  height: var(--nav-height);
+  height: 80px; /* Фиксированная высота для стабильности */
   z-index: 1000;
   display: flex;
   align-items: center;
   
-  background-color: transparent;
-  border-bottom: 1px solid transparent;
+  background-color: rgba(var(--bg-rgb), 0);
+  border-bottom: 1px solid rgba(var(--border-rgb), 0);
   
-  transition: background-color 0.4s var(--nav-easing),
-              border-color 0.4s var(--nav-easing),
-              backdrop-filter 0.4s var(--nav-easing);
+  /* Анимируем только фон и бордер, кривая сверхбыстрая для скролла */
+  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              backdrop-filter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: background-color, backdrop-filter;
 }
 
+/* Эффект дорогого матового стекла при скролле (Apple style) */
 .scrolled {
-  background-color: var(--nav-bg-scrolled);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom-color: var(--nav-border);
+  background-color: rgba(var(--bg-rgb, 10, 10, 10), 0.75);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-bottom-color: rgba(255, 255, 255, 0.08); /* Деликатный Hairline */
 }
 
 .container {
@@ -30,7 +33,6 @@
   padding: 0 var(--space-lg);
 }
 
-/* Привязка к 12-колоночной сетке для идеальной оси со Спецификациями и Галереей */
 .grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -38,25 +40,11 @@
   align-items: center;
 }
 
-.logoCol {
-  grid-column: 1 / 4;
-}
+.logoCol { grid-column: 1 / 4; }
+.navCol { grid-column: 4 / 10; display: flex; justify-content: center; gap: var(--space-xl); }
+.actionCol { grid-column: 10 / 13; display: flex; justify-content: flex-end; align-items: center; }
 
-.navCol {
-  grid-column: 4 / 10;
-  display: flex;
-  justify-content: center;
-  gap: var(--space-xl);
-}
-
-.actionCol {
-  grid-column: 10 / 13;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-/* Элементы */
+/* --- Логотип --- */
 .logo {
   font-family: var(--font-display);
   font-size: var(--text-md);
@@ -67,6 +55,7 @@
   text-transform: uppercase;
 }
 
+/* --- Навигация (Hover Directional Underline) --- */
 .navLink {
   font-family: var(--font-display);
   font-size: var(--text-sm);
@@ -74,71 +63,129 @@
   text-decoration: none;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  transition: color 0.4s var(--nav-easing);
   position: relative;
+  padding: 8px 0;
+  transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .navLink:hover {
   color: var(--text);
 }
 
-/* Деликатный индикатор ховера */
+/* Линия выезжает слева-направо при ховере, и уезжает вправо при отведении курсора */
 .navLink::after {
   content: '';
   position: absolute;
-  bottom: -4px;
+  bottom: 0;
   left: 0;
-  width: 0;
+  width: 100%;
   height: 1px;
   background-color: var(--text);
-  transition: width 0.4s var(--nav-easing);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
 .navLink:hover::after {
-  width: 100%;
+  transform: scaleX(1);
+  transform-origin: left center;
 }
 
-.phoneLink {
+/* --- Языковой селектор (Desktop) --- */
+.langWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.langTrigger {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   color: var(--text);
-  text-decoration: none;
-  transition: opacity 0.4s var(--nav-easing);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  transition: opacity 0.2s ease;
 }
 
-.phoneLink:hover {
-  opacity: 0.6;
+.langTrigger:hover {
+  opacity: 0.7;
 }
 
-/* --- Burger Button (Mobile) --- */
+.chevron {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.chevronUp {
+  transform: rotate(180deg);
+}
+
+/* Выпадашка появляется по физике (см. TSX) */
+.langPopover {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  min-width: 60px;
+  transform-origin: top center;
+  z-index: 10;
+}
+
+.langOption {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--muted);
+  background: none;
+  border: none;
+  padding: 10px 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.langOption:hover {
+  color: var(--text);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* --- Burger Button --- */
 .burgerBtn {
   display: none;
   flex-direction: column;
-  justify-content: space-between;
-  width: 24px;
-  height: 12px;
+  justify-content: center;
+  gap: 6px;
+  width: 32px;
+  height: 32px;
   background: transparent;
   border: none;
   cursor: pointer;
-  z-index: 1001; /* Поверх мобильного меню */
+  z-index: 1001;
   padding: 0;
 }
 
 .burgerLine {
   display: block;
-  width: 100%;
+  width: 24px;
   height: 1px;
   background-color: var(--text);
-  transition: transform 0.4s var(--nav-easing), opacity 0.4s var(--nav-easing);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
-.burgerActive .burgerLine:nth-child(1) {
-  transform: translateY(5.5px) rotate(45deg);
-}
-
-.burgerActive .burgerLine:nth-child(2) {
-  transform: translateY(-5.5px) rotate(-45deg);
-}
+.burgerActive .burgerLine:nth-child(1) { transform: translateY(3.5px) rotate(45deg); }
+.burgerActive .burgerLine:nth-child(2) { transform: translateY(-3.5px) rotate(-45deg); }
 
 /* --- Mobile Menu Overlay --- */
 .mobileOverlay {
@@ -148,19 +195,8 @@
   background-color: var(--bg);
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: var(--space-xl) var(--space-lg);
-  
-  opacity: 0;
-  pointer-events: none;
-  clip-path: inset(0 0 100% 0);
-  transition: clip-path 0.7s var(--nav-easing), opacity 0.7s ease;
-}
-
-.mobileOpen {
-  opacity: 1;
-  pointer-events: auto;
-  clip-path: inset(0 0 0 0);
+  padding: 100px var(--space-lg) var(--space-xl);
+  will-change: clip-path;
 }
 
 .mobileContainer {
@@ -168,101 +204,83 @@
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-  max-height: 70vh;
 }
 
 .mobileNav {
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
-  margin-top: 10vh;
+}
+
+.mobileMask {
+  overflow: hidden; /* Для Mask Reveal эффекта текста */
+  padding-bottom: 4px;
 }
 
 .mobileNavLink {
+  display: block;
   font-family: var(--font-display);
-  font-size: var(--text-xxl);
+  font-size: clamp(2rem, 8vw, 3rem);
   font-weight: 400;
   color: var(--text);
   text-decoration: none;
   text-transform: uppercase;
   letter-spacing: -0.02em;
-  
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease, transform 0.5s var(--nav-easing);
-}
-
-.mobileOpen .mobileNavLink {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .mobileFooter {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.5s ease 0.4s, transform 0.5s var(--nav-easing) 0.4s;
+  gap: var(--space-md);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--border);
 }
 
-.mobileOpen .mobileFooter {
-  opacity: 1;
-  transform: translateY(0);
+.mobileLangToggle {
+  display: flex;
+  gap: var(--space-md);
 }
 
-.mobileFooterLabel {
-  font-family: var(--font-display);
-  font-size: var(--text-sm);
+.mobileLangBtn {
+  font-family: var(--font-mono);
+  font-size: var(--text-md);
   color: var(--muted);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.3s ease;
 }
 
-.mobilePhone, .mobileEmail {
+.mobileLangActive {
+  color: var(--text);
+}
+
+.mobileEmail {
   font-family: var(--font-mono);
   font-size: var(--text-lg);
   color: var(--text);
   text-decoration: none;
 }
 
-/* --- Responsive --- */
-@media (max-width: 1024px) {
-  .navCol {
-    display: none; /* Прячем десктопную навигацию на планшетах */
-  }
-  
-  .logoCol {
-    grid-column: 1 / 6;
-  }
-  
-  .actionCol {
-    grid-column: 6 / 13;
-  }
-
-  .burgerBtn {
-    display: flex;
-    margin-left: var(--space-lg);
+/* --- Ограничение анимаций --- */
+@media (prefers-reduced-motion: reduce) {
+  .header, .navLink::after, .burgerLine, .chevron {
+    transition: none !important;
   }
 }
 
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+  .navCol { display: none; }
+  .logoCol { grid-column: 1 / 6; }
+  .actionCol { grid-column: 6 / 13; }
+  .langWrapper { display: none; } /* На планшете переносим язык в бургер */
+  .burgerBtn { display: flex; margin-left: auto; }
+}
+
 @media (max-width: 768px) {
-  .container {
-    padding: 0 var(--space-md);
-  }
-  
-  .grid {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .phoneLink {
-    display: none; /* Прячем номер в хедере на мобилке, он есть в меню */
-  }
-  
-  .burgerBtn {
-    margin-left: 0;
-  }
-  
-  .mobileOverlay {
-    padding: var(--space-xl) var(--space-md);
-  }
+  .container { padding: 0 var(--space-md); }
+  .grid { display: flex; justify-content: space-between; }
+  .mobileOverlay { padding: 100px var(--space-md) var(--space-xl); }
 }
