@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import styles from './Location.module.css';
 
 const advantages = [
@@ -10,65 +10,114 @@ const advantages = [
   { time: '—', unit: 'паркинг', desc: 'Места непосредственно у здания и комфортный подъезд спецтехники' },
 ];
 
+const customEase = [0.16, 1, 0.3, 1] as any;
+
 export default function Location() {
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
+  const shouldReduceMotion = useReducedMotion();
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.15 }
-    );
+  // Хореография левой колонки
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.12, delayChildren: 0.1 },
+    },
+  };
 
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
+  // Mask Reveal для типографики
+  const textVariants = {
+    hidden: { y: shouldReduceMotion ? 0 : '100%', opacity: shouldReduceMotion ? 0 : 1 },
+    show: { 
+      y: '0%', 
+      opacity: 1, 
+      transition: { duration: 1.2, ease: customEase } 
+    },
+  };
+
+  // Элементы списка (смещение + фейд)
+  const itemVariants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 16 },
+    show: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.8, ease: customEase } 
+    },
+  };
+
+  // GPU-линии (transform: scaleX)
+  const lineVariants = {
+    hidden: { scaleX: 0 },
+    show: { 
+      scaleX: 1, 
+      transition: { duration: 1.2, ease: customEase } 
+    },
+  };
 
   return (
-    <section 
-      ref={sectionRef}
-      className={`${styles.location} ${isVisible ? styles.visible : ''}`} 
-      id="location"
-    >
+    <section className={styles.location} id="location">
       <div className={styles.grid}>
         
-        {/* Левая колонка: Компактный контент */}
-        <div className={styles.content}>
+        {/* Левая колонка: Контент */}
+        <motion.div 
+          className={styles.content}
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
+        >
           <div className={styles.header}>
-            <span className={styles.eyebrow}>Локация</span>
-            <h2 className={styles.title}>Аль-Фараби, 75/2</h2>
-            <p className={styles.subtitle}>
-              Первая линия. Стратегический доступ к ключевым точкам Алматы.
-            </p>
+            <div className={styles.mask}>
+              <motion.span variants={textVariants} className={styles.eyebrow}>
+                Локация
+              </motion.span>
+            </div>
+            <div className={styles.mask}>
+              <motion.h2 variants={textVariants} className={styles.title}>
+                Аль-Фараби, 75/2
+              </motion.h2>
+            </div>
+            <div className={styles.mask}>
+              <motion.p variants={textVariants} className={styles.subtitle}>
+                Первая линия. Стратегический доступ к ключевым точкам Алматы.
+              </motion.p>
+            </div>
           </div>
 
           <div className={styles.advantages}>
+            {/* Верхняя линия таблицы */}
+            <motion.div variants={lineVariants} className={styles.advBorderTop} />
+            
             {advantages.map((adv, idx) => (
-              <div key={idx} className={styles.advantageItem}>
+              <motion.div key={idx} variants={itemVariants} className={styles.advantageItem}>
                 <div className={styles.advMetric}>
                   <span className={styles.advTime}>{adv.time}</span>
                   <span className={styles.advUnit}>{adv.unit}</span>
                 </div>
                 <p className={styles.advDesc}>{adv.desc}</p>
-              </div>
+                {/* Линия-разделитель (GPU) */}
+                <motion.div variants={lineVariants} className={styles.advBorderBottom} />
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
-        {/* Правая колонка: Карта без полей (Edge-to-Edge) */}
-        <div className={styles.mapWrapper}>
-          <iframe 
-            src="https://yandex.ru/map-widget/v1/?um=constructor%3Aada5da585ebbb52d3fa1f5891ed2c2bd36e31f458c17ca3e374b11a4efb8a3b9&amp;source=constructor" 
-            className={styles.iframe}
-            title="Расположение WAMOS"
-            loading="lazy"
-          />
-          <div className={styles.mapOverlay} />
+        {/* Правая колонка: Карта без полей */}
+        <div className={styles.mapContainer}>
+          <motion.div 
+            className={styles.mapWrapper}
+            initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 1.05 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 1.4, ease: customEase, delay: 0.2 }}
+          >
+            <iframe 
+              src="https://yandex.ru/map-widget/v1/?um=constructor%3Aada5da585ebbb52d3fa1f5891ed2c2bd36e31f458c17ca3e374b11a4efb8a3b9&amp;source=constructor" 
+              className={styles.iframe}
+              title="Расположение WAMOS"
+              loading="lazy"
+            />
+            <div className={styles.mapOverlay} />
+          </motion.div>
         </div>
 
       </div>

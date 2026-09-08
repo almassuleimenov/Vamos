@@ -8,24 +8,26 @@
   background-color: var(--loc-bg);
   border-top: 1px solid var(--loc-border);
   border-bottom: 1px solid var(--loc-border);
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 /* 
-  Edge-to-Edge Grid: 
-  Колонки 1 и 4 создают динамические отступы.
-  Колонка 2 - Контент (привязан к центру).
-  Колонка 3 - Карта (занимает свою половину, а затем мы растягиваем её вправо).
+  Асимметричный сплит.
+  Левая колонка занимает 5 долей, правая — 7.
 */
 .grid {
   display: grid;
-  grid-template-columns: minmax(var(--space-md), 1fr) minmax(auto, 700px) minmax(auto, 700px) minmax(0, 1fr);
+  grid-template-columns: 5fr 7fr;
+  width: 100%;
 }
 
 /* --- Контент (Левая часть) --- */
 .content {
-  grid-column: 2 / 3;
-  padding: var(--space-xl) var(--space-xl) var(--space-xl) 0;
+  /* Динамический паддинг: прижимаем левый край контента точно к сетке 1440px контейнера */
+  padding-left: max(var(--space-lg), calc((100vw - 1440px) / 2));
+  padding-right: var(--space-xl);
+  padding-top: var(--space-xxl);
+  padding-bottom: var(--space-xxl);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -33,14 +35,14 @@
 
 .header {
   margin-bottom: var(--space-xl);
-  opacity: 0;
-  transform: translateY(15px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
-.visible .header {
-  opacity: 1;
-  transform: translateY(0);
+/* Обертка для кинематографичного выезда текста */
+.mask {
+  overflow: hidden;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+  will-change: transform;
 }
 
 .eyebrow {
@@ -51,6 +53,7 @@
   letter-spacing: 0.05em;
   color: var(--loc-muted);
   margin-bottom: var(--space-sm);
+  will-change: transform;
 }
 
 .title {
@@ -61,6 +64,7 @@
   letter-spacing: -0.01em;
   color: var(--text);
   margin-bottom: var(--space-xs);
+  will-change: transform;
 }
 
 .subtitle {
@@ -69,35 +73,46 @@
   color: var(--loc-muted);
   line-height: 1.4;
   max-width: 90%;
+  will-change: transform;
 }
 
 /* --- Таблица преимуществ --- */
 .advantages {
+  position: relative;
   display: flex;
   flex-direction: column;
-  border-top: 1px solid var(--loc-border);
+}
+
+/* Физические линии бордеров (GPU) */
+.advBorderTop,
+.advBorderBottom {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--loc-border);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+.advBorderTop {
+  top: 0;
+}
+
+.advBorderBottom {
+  bottom: 0;
 }
 
 .advantageItem {
+  position: relative;
   display: grid;
   grid-template-columns: 80px 1fr;
   gap: var(--space-md);
-  padding: var(--space-sm) 0;
-  border-bottom: 1px solid var(--loc-border);
+  padding: var(--space-md) 0;
   align-items: flex-start;
-  
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  will-change: transform, opacity;
 }
 
-.visible .advantageItem:nth-child(1) { transition-delay: 0.1s; }
-.visible .advantageItem:nth-child(2) { transition-delay: 0.15s; }
-.visible .advantageItem:nth-child(3) { transition-delay: 0.2s; }
-.visible .advantageItem:nth-child(4) { transition-delay: 0.25s; }
-.visible .advantageItem { opacity: 1; transform: translateY(0); }
-
-/* Компактные цифры */
 .advMetric {
   display: flex;
   flex-direction: column;
@@ -128,21 +143,22 @@
   max-width: 400px;
 }
 
-/* --- Карта (Правая часть - Edge to Edge) --- */
-.mapWrapper {
-  /* Карта занимает свою колонку и пробивает пустое пространство до правого края экрана */
-  grid-column: 3 / 5; 
+/* --- Карта (Правая часть) --- */
+.mapContainer {
   position: relative;
-  min-height: 400px; /* Компактная высота */
+  width: 100%;
   height: 100%;
   border-left: 1px solid var(--loc-border);
-  
-  opacity: 0;
-  transition: opacity 0.8s ease 0.3s;
+  overflow: hidden;
 }
 
-.visible .mapWrapper {
-  opacity: 1;
+.mapWrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  will-change: transform, opacity;
+  transform-origin: center center;
 }
 
 .iframe {
@@ -152,24 +168,24 @@
   height: 100%;
   border: none;
   filter: var(--loc-map-filter);
-  transition: filter 0.4s ease;
+  transition: filter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.mapWrapper:hover .iframe {
-  filter: none;
+@media (hover: hover) and (pointer: fine) {
+  .mapContainer:hover .iframe {
+    filter: none;
+  }
+  .mapContainer:hover .mapOverlay {
+    pointer-events: none;
+  }
 }
 
-/* Оверлей-заглушка от случайного скролла */
+/* Оверлей-заглушка от случайного скролла колесиком */
 .mapOverlay {
   position: absolute;
   inset: 0;
   z-index: 10;
   background: transparent;
-  transition: background-color 0.3s ease;
-}
-
-.mapWrapper:hover .mapOverlay {
-  pointer-events: none;
 }
 
 /* --- Адаптив --- */
@@ -179,17 +195,24 @@
   }
   
   .content {
-    grid-column: 1 / -1;
-    padding: var(--space-xl) var(--space-md);
+    /* На планшетах возвращаем стандартные отступы */
+    padding: var(--space-xl) var(--space-lg);
     max-width: 700px;
     margin: 0 auto;
+    width: 100%;
   }
 
-  .mapWrapper {
-    grid-column: 1 / -1;
-    height: 50vh;
-    min-height: 400px;
+  .mapContainer {
     border-left: none;
     border-top: 1px solid var(--loc-border);
+    height: 50vh;
+    min-height: 400px;
+    position: relative;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: var(--space-xl) var(--space-md);
   }
 }
