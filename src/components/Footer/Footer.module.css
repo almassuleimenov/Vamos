@@ -1,162 +1,199 @@
 .footer {
-  background-color: var(--bg);
-  border-top: 1px solid var(--border);
+  width: 100vw;
+  background-color: var(--surface); /* Немного контрастирует с основным фоном */
+  color: var(--text);
+  border-top: 1px solid var(--footer-border);
+  padding-top: var(--space-xl);
+}
+
+.container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
   display: flex;
   flex-direction: column;
 }
 
-/* --- GRID TOP --- */
-.grid {
+/* Основная сетка */
+.mainGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-lg);
-  padding: var(--space-xl) var(--space-lg);
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-xl) var(--space-md);
+  padding-bottom: var(--space-xl);
 }
 
-.column {
+/* Колонки */
+.brandCol {
+  grid-column: 1 / 5;
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-lg);
 }
 
-.label {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--muted);
-  letter-spacing: 0.05em;
-  margin: 0;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: var(--space-xs);
-}
-
-.address {
-  font-size: var(--text-base);
-  line-height: 1.5;
-  color: var(--text);
-  font-style: normal;
-}
-
-.link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-xs);
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--text);
-  text-transform: uppercase;
-  transition: color 0.2s ease;
-  align-self: flex-start;
-}
-
-.link:hover {
-  color: var(--accent);
-}
-
-.list {
+.addressCol {
+  grid-column: 5 / 8;
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
 }
 
-.listItem {
+.legalCol {
+  grid-column: 8 / 13;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+/* Логотип */
+.logo {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* Контакты */
+.contacts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  font-style: normal;
+}
+
+.contactItem {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.itemRole {
-  font-family: var(--font-mono);
+.contactLabel {
+  font-family: var(--font-display);
   font-size: var(--text-sm);
   color: var(--muted);
 }
 
-.itemValue {
+.contactLink {
+  font-family: var(--font-mono);
   font-size: var(--text-base);
   color: var(--text);
-  font-weight: 500;
-}
-
-.linkHover {
-  font-size: var(--text-base);
-  color: var(--text);
-  font-weight: 500;
   text-decoration: none;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.3s var(--footer-hover-easing);
+  width: fit-content;
 }
 
-.linkHover:hover {
+.contactLink:hover {
   opacity: 0.6;
 }
 
-/* --- FOUNDATION (BOTTOM) --- */
-.foundation {
-  display: flex;
-  flex-direction: column;
-  padding: 0 var(--space-lg);
-  overflow: hidden;
+.contactLink:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
 }
 
-.foundationMeta {
-  display: flex;
-  justify-content: space-between;
-  padding: var(--space-md) 0;
-  border-top: 1px solid var(--border);
-}
-
-.monoText {
-  font-family: var(--font-mono);
+/* Заголовки колонок */
+.colTitle {
+  font-family: var(--font-display);
   font-size: var(--text-sm);
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.massiveText {
+/* Тексты */
+.addressText {
   font-family: var(--font-display);
-  /* Жидкостное масштабирование: от 3rem на мобилках до огромного размера на десктопе */
-  font-size: clamp(3rem, 12vw, 15rem);
-  font-weight: 700;
-  line-height: 0.8;
-  letter-spacing: -0.04em;
-  color: var(--text);
-  text-align: center;
-  /* Отрезаем нижний отступ, чтобы текст визуально упирался в край экрана */
-  margin-bottom: -0.1em;
-  white-space: nowrap;
+  font-size: var(--text-base);
+  line-height: 1.5;
+  margin: 0;
 }
 
-/* --- АДАПТИВ --- */
+.disclaimers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.disclaimers p {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--muted);
+  line-height: 1.4;
+  margin: 0;
+  max-width: 60ch;
+}
+
+/* Нижний бар (Колофон) */
+.bottomBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) 0;
+  border-top: 1px solid var(--footer-border);
+}
+
+.copyright {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.policyLink {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.3s var(--footer-hover-easing);
+}
+
+.policyLink:hover {
+  color: var(--text);
+}
+
+.policyLink:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
+}
+
+/* Адаптив */
 @media (max-width: 1024px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
+  .brandCol { grid-column: 1 / 6; }
+  .addressCol { grid-column: 6 / 13; }
+  .legalCol { 
+    grid-column: 1 / 13; 
+    border-top: 1px solid var(--footer-border);
+    padding-top: var(--space-md);
   }
 }
 
 @media (max-width: 768px) {
-  .grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-xl);
-    padding: var(--space-xl) var(--space-md);
-  }
-  
-  .foundation {
+  .container {
     padding: 0 var(--space-md);
   }
   
-  .foundationMeta {
-    flex-direction: column;
-    gap: var(--space-xs);
-    align-items: center;
-    text-align: center;
+  .mainGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
   }
-}
 
-@media (max-width: 380px) {
-  .grid {
-    padding: var(--space-lg) var(--space-sm);
+  .brandCol, .addressCol, .legalCol {
+    grid-column: 1 / -1;
   }
   
-  .foundation {
-    padding: 0 var(--space-sm);
+  .addressCol {
+    border-top: 1px solid var(--footer-border);
+    padding-top: var(--space-md);
+  }
+
+  .bottomBar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
   }
 }
