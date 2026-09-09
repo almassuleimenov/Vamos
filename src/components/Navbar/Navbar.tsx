@@ -2,29 +2,72 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import styles from './Navbar.module.css';
 
-const navLinks = [
-  { label: 'О проекте', href: '#about' },
-  { label: 'Галерея', href: '#gallery' },
-  { label: 'Локация', href: '#location' },
-  { label: 'Контакты', href: '#contacts' },
-];
+const locales = ['ru', 'kz', 'en'] as const;
+type Locale = typeof locales[number];
 
-const languages = ['RU', 'KZ', 'EN'];
+const dict = {
+  ru: {
+    navLinks: [
+      { label: 'О проекте', href: '#about' },
+      { label: 'Галерея', href: '#gallery' },
+      { label: 'Локация', href: '#location' },
+      { label: 'Контакты', href: '#contacts' },
+    ],
+    toggleMenu: 'Открыть меню',
+  },
+  kz: {
+    navLinks: [
+      { label: 'Жоба туралы', href: '#about' },
+      { label: 'Галерея', href: '#gallery' },
+      { label: 'Орналасуы', href: '#location' },
+      { label: 'Байланыстар', href: '#contacts' },
+    ],
+    toggleMenu: 'Мәзірді ашу',
+  },
+  en: {
+    navLinks: [
+      { label: 'About', href: '#about' },
+      { label: 'Gallery', href: '#gallery' },
+      { label: 'Location', href: '#location' },
+      { label: 'Contacts', href: '#contacts' },
+    ],
+    toggleMenu: 'Toggle menu',
+  },
+} as const;
+
+type Lang = keyof typeof dict;
+
+interface NavbarProps {
+  lang: string;
+}
 
 // Физика пружины для интерфейсных элементов
 const springConfig = { type: 'spring', mass: 0.8, stiffness: 250, damping: 25 } as any;
 // Кинематографичная кривая
 const customEase = [0.16, 1, 0.3, 1];
 
-export default function Navbar() {
+// Заменяет текущий локаль-сегмент пути на новый, сохраняя остальную часть URL
+function buildLocalePath(pathname: string, newLocale: Locale) {
+  const rest = pathname.replace(/^\/(ru|kz|en)(\/|$)/, '/');
+  const suffix = rest === '/' ? '' : rest;
+  return `/${newLocale}${suffix}`;
+}
+
+export default function Navbar({ lang }: NavbarProps) {
+  const t = dict[(lang as Lang)] ?? dict.ru;
+  const activeLocale: Locale = (locales as readonly string[]).includes(lang) ? (lang as Locale) : 'ru';
+
+  const pathname = usePathname();
+  const router = useRouter();
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
-  const [activeLang, setActiveLang] = useState('RU');
-  
+
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
@@ -37,12 +80,17 @@ export default function Navbar() {
     document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
   }, [isMobileMenuOpen]);
 
+  const switchLocale = (newLocale: Locale) => {
+    if (newLocale === activeLocale) return;
+    router.push(buildLocalePath(pathname, newLocale));
+  };
+
   const menuVariants = {
-    closed: { 
+    closed: {
       clipPath: 'inset(0% 0% 100% 0%)',
       transition: { duration: 0.6, ease: customEase }
     },
-    open: { 
+    open: {
       clipPath: 'inset(0% 0% 0% 0%)',
       transition: { duration: 0.8, ease: customEase, staggerChildren: 0.05, delayChildren: 0.1 }
     }
@@ -51,24 +99,24 @@ export default function Navbar() {
   const itemVariants = {
     closed: { opacity: 0, y: shouldReduceMotion ? 0 : 24 },
     open: { opacity: 1, y: 0, transition: springConfig }
-  }as any;
+  } as any;
 
   return (
     <>
       <header className={`${styles.header} ${isScrolled ? styles.scrolled : ''}`}>
         <div className={styles.container}>
           <div className={styles.grid}>
-            
+
             {/* Логотип */}
             <div className={styles.logoCol}>
-              <Link href="/" className={styles.logo} onClick={() => setIsMobileMenuOpen(false)}>
+              <Link href={`/${activeLocale}`} className={styles.logo} onClick={() => setIsMobileMenuOpen(false)}>
                 WAMOS
               </Link>
             </div>
 
             {/* Десктопная навигация */}
             <nav className={styles.navCol}>
-              {navLinks.map((link) => (
+              {t.navLinks.map((link) => (
                 <Link key={link.href} href={link.href} className={styles.navLink}>
                   {link.label}
                 </Link>
@@ -77,36 +125,36 @@ export default function Navbar() {
 
             {/* Правый блок (Языки + Бургер) */}
             <div className={styles.actionCol}>
-              
+
               {/* Языковой селектор (Desktop) */}
-              <div 
-                className={styles.langWrapper} 
+              <div
+                className={styles.langWrapper}
                 onMouseEnter={() => setIsLangOpen(true)}
                 onMouseLeave={() => setIsLangOpen(false)}
               >
                 <button className={styles.langTrigger} aria-expanded={isLangOpen}>
-                  {activeLang}
+                  {activeLocale.toUpperCase()}
                   <svg viewBox="0 0 12 12" className={`${styles.chevron} ${isLangOpen ? styles.chevronUp : ''}`}>
                     <path d="M2.5 4.5L6 8L9.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square"/>
                   </svg>
                 </button>
-                
+
                 <AnimatePresence>
                   {isLangOpen && (
-                    <motion.div 
+                    <motion.div
                       className={styles.langPopover}
                       initial={{ opacity: 0, scale: 0.96, y: -4 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.96, y: -4 }}
                       transition={springConfig}
                     >
-                      {languages.filter(l => l !== activeLang).map(lang => (
-                        <button 
-                          key={lang} 
+                      {locales.filter((l) => l !== activeLocale).map((locale) => (
+                        <button
+                          key={locale}
                           className={styles.langOption}
-                          onClick={() => { setActiveLang(lang); setIsLangOpen(false); }}
+                          onClick={() => { switchLocale(locale); setIsLangOpen(false); }}
                         >
-                          {lang}
+                          {locale.toUpperCase()}
                         </button>
                       ))}
                     </motion.div>
@@ -115,10 +163,10 @@ export default function Navbar() {
               </div>
 
               {/* Бургер (Мобильный) */}
-              <button 
+              <button
                 className={`${styles.burgerBtn} ${isMobileMenuOpen ? styles.burgerActive : ''}`}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                aria-label="Toggle menu"
+                aria-label={t.toggleMenu}
               >
                 <span className={styles.burgerLine} />
                 <span className={styles.burgerLine} />
@@ -132,7 +180,7 @@ export default function Navbar() {
       {/* Мобильное меню */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div 
+          <motion.div
             className={styles.mobileOverlay}
             variants={menuVariants}
             initial="closed"
@@ -141,11 +189,11 @@ export default function Navbar() {
           >
             <div className={styles.mobileContainer}>
               <motion.nav className={styles.mobileNav}>
-                {navLinks.map((link) => (
+                {t.navLinks.map((link) => (
                   <div key={link.href} className={styles.mobileMask}>
                     <motion.div variants={itemVariants}>
-                      <Link 
-                        href={link.href} 
+                      <Link
+                        href={link.href}
                         className={styles.mobileNavLink}
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
@@ -155,16 +203,16 @@ export default function Navbar() {
                   </div>
                 ))}
               </motion.nav>
-              
+
               <motion.div className={styles.mobileFooter} variants={itemVariants}>
                 <div className={styles.mobileLangToggle}>
-                  {languages.map(lang => (
-                    <button 
-                      key={lang}
-                      className={`${styles.mobileLangBtn} ${activeLang === lang ? styles.mobileLangActive : ''}`}
-                      onClick={() => setActiveLang(lang)}
+                  {locales.map((locale) => (
+                    <button
+                      key={locale}
+                      className={`${styles.mobileLangBtn} ${activeLocale === locale ? styles.mobileLangActive : ''}`}
+                      onClick={() => { switchLocale(locale); setIsMobileMenuOpen(false); }}
                     >
-                      {lang}
+                      {locale.toUpperCase()}
                     </button>
                   ))}
                 </div>

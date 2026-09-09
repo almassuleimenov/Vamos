@@ -9,12 +9,14 @@ import { FloatingSocials } from '@/components/FloatingSocials/FloatingSocials';
 import FloorPlans from '@/components/FloorPlans/FloorPlans';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     lang: string;
-  };
+  }>;
 }
 
-export default function Home({ params: { lang } }: PageProps) {
+export default async function Home({ params }: PageProps) {
+  const { lang } = await params;
+
   return (
     <main className={styles.main}>
       <Hero lang={lang} />
