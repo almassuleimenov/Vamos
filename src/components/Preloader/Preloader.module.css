@@ -1,8 +1,4 @@
 .preloader {
-  /* ТЕ САМЫЕ ПОТЕРЯННЫЕ ТОКЕНЫ: */
-  --preloader-easing-reveal: cubic-bezier(0.16, 1, 0.3, 1);
-  --preloader-easing-exit: cubic-bezier(0.85, 0, 0.15, 1);
-
   position: fixed;
   inset: 0;
   z-index: 99999;
@@ -10,58 +6,47 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  
-  /* Анимация ухода всей панели вверх */
-  transition: transform 1.2s var(--preloader-easing-exit);
+  /* GPU-ускорение для тяжелой шторки на весь экран */
   will-change: transform;
 }
 
-.loaded {
-  transform: translateY(-100%);
+/* Обертка всего слова, отвечает за микро-скейл */
+.wordContainer {
+  display: flex;
+  /* Буфер для выносных элементов шрифта и теней */
+  padding: var(--space-md);
+  will-change: transform, opacity;
 }
 
-/* Обертка (маска) для эффекта проявления текста из-под невидимой линии */
-.textWrapper {
+/* Индивидуальная маска для каждой буквы (Mask Reveal) */
+.letterMask {
   overflow: hidden;
-  padding: 10px; /* Буфер для выносных элементов шрифта */
+  display: inline-block;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+  /* Защита от багов рендеринга масок в Safari */
+  transform: translateZ(0); 
 }
 
-/* Само слово */
-.text {
-  display: block;
+/* Сама буква */
+.letter {
+  display: inline-block;
   font-family: var(--font-display);
   font-size: clamp(4rem, 12vw, 10rem);
   font-weight: 500;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   color: var(--text);
   line-height: 0.9;
   text-transform: uppercase;
-
-  /* Стартовое состояние (спрятано внизу) */
-  transform: translateY(110%);
-  opacity: 0;
-  
-  /* Появление при загрузке компонента */
-  animation: textReveal 1.2s var(--preloader-easing-reveal) 0.2s forwards;
+  will-change: transform, opacity;
 }
 
-/* Поведение текста, когда панель уезжает наверх */
-.loaded .text {
-  /* Обратный параллакс: панель едет вверх, а текст слегка оседает вниз, растворяясь */
-  transform: translateY(60%);
-  opacity: 0;
-  transition: transform 1.2s var(--preloader-easing-exit), 
-              opacity 0.8s ease;
-}
-
-/* Keyframes проявления */
-@keyframes textReveal {
-  0% {
-    transform: translateY(110%);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
+/* --- Fallback для Reduced Motion (Доступность) --- */
+@media (prefers-reduced-motion: reduce) {
+  .preloader,
+  .wordContainer,
+  .letter {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }
