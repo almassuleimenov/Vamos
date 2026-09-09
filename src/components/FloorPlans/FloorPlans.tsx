@@ -3,11 +3,51 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import styles from './FloorPlans.module.css';
 
+const dictionaries = {
+  ru: {
+    title: 'Поэтажные планы',
+    desc: 'Подробные архитектурные планировки, экспликация помещений, разрезы и схемы инженерных узлов для вашей команды проектировщиков.',
+    metaDocLabel: 'Документ',
+    metaDocValue: 'WAMOS_FLOOR_PLANS',
+    metaFormatLabel: 'Формат',
+    metaFormatValue: 'PDF (Вектор)',
+    actionText: 'Скачать документацию',
+    downloadName: 'WAMOS_Архитектурный_Проект.pdf',
+  },
+  kz: {
+    title: 'Қабаттық жоспарлар',
+    desc: 'Жобалаушылар командаңызға арналған егжей-тегжейлі сәулет жоспарлары, үй-жайлардың экспликациясы, қималар және инженерлік түйіндер сұлбалары.',
+    metaDocLabel: 'Құжат',
+    metaDocValue: 'WAMOS_FLOOR_PLANS',
+    metaFormatLabel: 'Пішім',
+    metaFormatValue: 'PDF (Вектор)',
+    actionText: 'Құжаттаманы жүктеу',
+    downloadName: 'WAMOS_Сәулет_Жобасы.pdf',
+  },
+  en: {
+    title: 'Floor Plans',
+    desc: 'Detailed architectural layouts, room schedules, sections, and engineering node diagrams for your design team.',
+    metaDocLabel: 'Document',
+    metaDocValue: 'WAMOS_FLOOR_PLANS',
+    metaFormatLabel: 'Format',
+    metaFormatValue: 'PDF (Vector)',
+    actionText: 'Download documentation',
+    downloadName: 'WAMOS_Architectural_Project.pdf',
+  },
+};
+
+type Locale = keyof typeof dictionaries;
+
+interface FloorPlansProps {
+  lang: string;
+}
+
 // Кинематографичная кривая
 const customEase = [0.16, 1, 0.3, 1];
 
-export default function FloorPlans() {
+export default function FloorPlans({ lang }: FloorPlansProps) {
   const shouldReduceMotion = useReducedMotion();
+  const dict = dictionaries[lang as Locale] || dictionaries.ru;
 
   // Контейнер для каскадного появления элементов левой колонки
   const infoVariants = {
@@ -66,7 +106,7 @@ export default function FloorPlans() {
           >
             <div className={styles.mask}>
               <motion.h2 variants={textVariants} className={styles.title}>
-                Поэтажные планы
+                {dict.title}
               </motion.h2>
             </div>
             
@@ -74,8 +114,7 @@ export default function FloorPlans() {
             
             <div className={styles.mask}>
               <motion.p variants={textVariants} className={styles.desc}>
-                Подробные архитектурные планировки, экспликация помещений, 
-                разрезы и схемы инженерных узлов для вашей команды проектировщиков.
+                {dict.desc}
               </motion.p>
             </div>
           </motion.div>
@@ -90,24 +129,24 @@ export default function FloorPlans() {
           >
             <a 
               href="/document.pdf" 
-              download="WAMOS_Архитектурный_Проект.pdf"
+              download={dict.downloadName}
               className={styles.blueprintCard}
             >
               {/* Верхняя часть карточки с метаданными */}
               <div className={styles.cardHeader}>
                 <div className={styles.metaCell}>
-                  <span className={styles.metaLabel}>Документ</span>
-                  <span className={styles.metaValue}>WAMOS_FLOOR_PLANS</span>
+                  <span className={styles.metaLabel}>{dict.metaDocLabel}</span>
+                  <span className={styles.metaValue}>{dict.metaDocValue}</span>
                 </div>
                 <div className={styles.metaCell}>
-                  <span className={styles.metaLabel}>Формат</span>
-                  <span className={styles.metaValue}>PDF (Вектор)</span>
+                  <span className={styles.metaLabel}>{dict.metaFormatLabel}</span>
+                  <span className={styles.metaValue}>{dict.metaFormatValue}</span>
                 </div>
               </div>
 
               {/* Нижняя часть карточки с призывом */}
               <div className={styles.cardBody}>
-                <span className={styles.actionText}>Скачать документацию</span>
+                <span className={styles.actionText}>{dict.actionText}</span>
                 <div className={styles.iconWrapper}>
                   {/* Основная иконка */}
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className={styles.arrowIcon}>
