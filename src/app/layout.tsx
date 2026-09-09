@@ -24,17 +24,19 @@ const fontMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Институт Коммуникации | Коммерческая недвижимость',
+  title: 'WAMOS | Коммерческая недвижимость класса А',
   description:
-    'Премиальное 2-этажное коммерческое здание с подвалом на пр. Аль-Фараби, 75/2. Площадь: 1071.4 м². Архитектурный проект.',
+    'Премиальные офисы и торговые площади на первой линии пр. Аль-Фараби, 75/2 в Алматы. Общая площадь: 1 071.4 м². Архитектурный проект.',
   keywords: [
-    'коммерческая недвижимость',
+    'WAMOS',
+    'коммерческая недвижимость Алматы',
     'Аль-Фараби',
-    'БЦ',
-    'Институт коммуникации',
-    'Алматы',
+    'БЦ Wamos',
+    'офисы класса А',
+    'торговые площади',
+    'аренда офиса Алматы'
   ],
-  authors: [{ name: 'IC' }],
+  authors: [{ name: 'WAMOS' }],
   robots: 'index, follow',
 };
 
@@ -48,8 +50,8 @@ export default function RootLayout({
       <body
         className={`${fontDisplay.variable} ${fontMono.variable} antialiased`}
       >
-        <Preloader/>
-        <Navbar/>
+        <Preloader />
+        <Navbar />
         <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>
