@@ -14,9 +14,9 @@ const navLinks = [
 
 const languages = ['RU', 'KZ', 'EN'];
 
-// Физика пружины для интерфейсных элементов (быстрая, упругая)
+// Физика пружины для интерфейсных элементов
 const springConfig = { type: 'spring', mass: 0.8, stiffness: 250, damping: 25 } as any;
-// Кинематографичная кривая для шторок
+// Кинематографичная кривая
 const customEase = [0.16, 1, 0.3, 1];
 
 export default function Navbar() {
@@ -37,7 +37,6 @@ export default function Navbar() {
     document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
   }, [isMobileMenuOpen]);
 
-  // Варианты для мобильного меню (Шторка)
   const menuVariants = {
     closed: { 
       clipPath: 'inset(0% 0% 100% 0%)',
@@ -49,11 +48,10 @@ export default function Navbar() {
     }
   } as any;
 
-  // Варианты для ссылок внутри меню
   const itemVariants = {
     closed: { opacity: 0, y: shouldReduceMotion ? 0 : 24 },
     open: { opacity: 1, y: 0, transition: springConfig }
-  } as any;
+  }as any;
 
   return (
     <>

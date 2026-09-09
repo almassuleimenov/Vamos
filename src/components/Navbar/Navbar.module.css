@@ -3,27 +3,26 @@
   top: 0;
   left: 0;
   width: 100vw;
-  height: 80px; /* Фиксированная высота для стабильности */
+  height: 80px;
   z-index: 1000;
   display: flex;
   align-items: center;
   
-  background-color: rgba(var(--bg-rgb), 0);
-  border-bottom: 1px solid rgba(var(--border-rgb), 0);
+  background-color: rgba(255, 255, 255, 0);
+  border-bottom: 1px solid rgba(0, 0, 0, 0);
   
-  /* Анимируем только фон и бордер, кривая сверхбыстрая для скролла */
   transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
               border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
               backdrop-filter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: background-color, backdrop-filter;
 }
 
-/* Эффект дорогого матового стекла при скролле (Apple style) */
+/* Эффект чистого светлого стекла (Идеально для белого сайта) */
 .scrolled {
-  background-color: rgba(var(--bg-rgb, 10, 10, 10), 0.75);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border-bottom-color: rgba(255, 255, 255, 0.08); /* Деликатный Hairline */
+  background-color: rgba(255, 255, 255, 0.65); /* Легкая белая вуаль */
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-bottom-color: rgba(0, 0, 0, 0.05); /* Очень деликатная линия */
 }
 
 .container {
@@ -44,6 +43,22 @@
 .navCol { grid-column: 4 / 10; display: flex; justify-content: center; gap: var(--space-xl); }
 .actionCol { grid-column: 10 / 13; display: flex; justify-content: flex-end; align-items: center; }
 
+/* --- Ambient Glow (Защита текста при скролле над картинками) --- */
+.logo, .navLink, .langTrigger, .burgerLine {
+  transition: text-shadow 0.4s ease, color 0.3s ease, background-color 0.4s ease;
+}
+
+.scrolled .logo,
+.scrolled .navLink,
+.scrolled .langTrigger {
+  /* Белый ореол вокруг текста, чтобы он читался даже на фоне темных фото */
+  text-shadow: 0 0 16px rgba(255, 255, 255, 1), 0 0 8px rgba(255, 255, 255, 0.8);
+}
+
+.scrolled .burgerLine {
+  box-shadow: 0 0 8px rgba(255, 255, 255, 1);
+}
+
 /* --- Логотип --- */
 .logo {
   font-family: var(--font-display);
@@ -55,7 +70,7 @@
   text-transform: uppercase;
 }
 
-/* --- Навигация (Hover Directional Underline) --- */
+/* --- Навигация --- */
 .navLink {
   font-family: var(--font-display);
   font-size: var(--text-sm);
@@ -65,14 +80,12 @@
   letter-spacing: 0.05em;
   position: relative;
   padding: 8px 0;
-  transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .navLink:hover {
   color: var(--text);
 }
 
-/* Линия выезжает слева-направо при ховере, и уезжает вправо при отведении курсора */
 .navLink::after {
   content: '';
   position: absolute;
@@ -111,7 +124,6 @@
   border: none;
   cursor: pointer;
   padding: 8px 12px;
-  transition: opacity 0.2s ease;
 }
 
 .langTrigger:hover {
@@ -129,7 +141,6 @@
   transform: rotate(180deg);
 }
 
-/* Выпадашка появляется по физике (см. TSX) */
 .langPopover {
   position: absolute;
   top: 100%;
@@ -157,7 +168,7 @@
 
 .langOption:hover {
   color: var(--text);
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(0, 0, 0, 0.04);
 }
 
 /* --- Burger Button --- */
@@ -180,7 +191,7 @@
   width: 24px;
   height: 1px;
   background-color: var(--text);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
   will-change: transform;
 }
 
@@ -213,7 +224,7 @@
 }
 
 .mobileMask {
-  overflow: hidden; /* Для Mask Reveal эффекта текста */
+  overflow: hidden;
   padding-bottom: 4px;
 }
 
@@ -263,7 +274,6 @@
   text-decoration: none;
 }
 
-/* --- Ограничение анимаций --- */
 @media (prefers-reduced-motion: reduce) {
   .header, .navLink::after, .burgerLine, .chevron {
     transition: none !important;
@@ -275,7 +285,7 @@
   .navCol { display: none; }
   .logoCol { grid-column: 1 / 6; }
   .actionCol { grid-column: 6 / 13; }
-  .langWrapper { display: none; } /* На планшете переносим язык в бургер */
+  .langWrapper { display: none; } 
   .burgerBtn { display: flex; margin-left: auto; }
 }
 
