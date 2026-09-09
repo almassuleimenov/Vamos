@@ -12,12 +12,27 @@ const images = [
   { id: '05', src: '/IMG_5079.JPG.jpeg', span: 'full' },
 ];
 
+// Локализация alt-текстов (ru/kz/en)
+const dict = {
+  ru: { alt: 'Рендер WAMOS', fullscreenAlt: 'Полноэкранный рендер WAMOS' },
+  kz: { alt: 'WAMOS рендері', fullscreenAlt: 'WAMOS толық экранды рендері' },
+  en: { alt: 'WAMOS Render', fullscreenAlt: 'WAMOS Fullscreen Render' },
+} as const;
+
+type Lang = keyof typeof dict;
+
+interface GalleryProps {
+  lang: string;
+}
+
 // Физика для модальных окон (монументально, мягко)
 const modalSpring = { type: 'spring', mass: 1, stiffness: 180, damping: 24 } as any;
 // Кинематографичная кривая для скролл-появления
 const customEase = [0.16, 1, 0.3, 1] as any;
 
-export default function Gallery() {
+export default function Gallery({ lang }: GalleryProps) {
+  const t = dict[(lang as Lang)] ?? dict.ru;
+
   const [activeImage, setActiveImage] = useState<typeof images[0] | null>(null);
   const shouldReduceMotion = useReducedMotion();
 
@@ -52,34 +67,34 @@ export default function Gallery() {
   // Появление карточки (деликатный scale + opacity)
   const itemVariants = {
     hidden: { opacity: 0, scale: shouldReduceMotion ? 1 : 0.96, y: shouldReduceMotion ? 0 : 20 },
-    show: { 
-      opacity: 1, 
-      scale: 1, 
+    show: {
+      opacity: 1,
+      scale: 1,
       y: 0,
-      transition: { duration: 1.2, ease: customEase } 
+      transition: { duration: 1.2, ease: customEase },
     },
   };
 
   return (
     <section className={styles.gallery} id="gallery">
       <div className={styles.container}>
-        <motion.div 
+        <motion.div
           className={styles.grid}
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true, amount: 0.1, margin: "0px 0px -10% 0px" }}
+          viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }}
         >
           {images.map((img) => (
-            <motion.div 
-              key={img.id} 
+            <motion.div
+              key={img.id}
               className={`${styles.item} ${styles[img.span]}`}
               variants={itemVariants}
             >
               <div className={styles.meta}>
                 {/* Mask Reveal для номера */}
                 <div className={styles.numberMask}>
-                  <motion.span 
+                  <motion.span
                     className={styles.number}
                     initial={{ y: '100%' }}
                     whileInView={{ y: '0%' }}
@@ -90,7 +105,7 @@ export default function Gallery() {
                   </motion.span>
                 </div>
                 {/* Анимация линии из центра (GPU scaleX) */}
-                <motion.div 
+                <motion.div
                   className={styles.metaLine}
                   initial={{ scaleX: 0 }}
                   whileInView={{ scaleX: 1 }}
@@ -98,17 +113,17 @@ export default function Gallery() {
                   transition={{ duration: 1, ease: customEase, delay: 0.1 }}
                 />
               </div>
-              
-              <div 
+
+              <div
                 className={styles.imageWrapper}
                 onClick={() => setActiveImage(img)}
               >
                 {/* Если фото открыто, прячем оригинал в сетке, чтобы работал FLIP-морфинг */}
-                <motion.img 
+                <motion.img
                   layoutId={shouldReduceMotion ? undefined : `gallery-img-${img.id}`}
-                  src={img.src} 
-                  alt={`WAMOS Render ${img.id}`} 
-                  className={styles.image} 
+                  src={img.src}
+                  alt={`${t.alt} ${img.id}`}
+                  className={styles.image}
                   loading="lazy"
                   style={{ opacity: activeImage?.id === img.id ? 0 : 1 }}
                   whileHover={!shouldReduceMotion ? { scale: 1.03 } : {}}
@@ -123,7 +138,7 @@ export default function Gallery() {
       {/* Бесшовный FLIP-Лайтбокс */}
       <AnimatePresence>
         {activeImage && (
-          <motion.div 
+          <motion.div
             className={styles.lightbox}
             initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
             animate={{ opacity: 1, backdropFilter: 'blur(16px)' }}
@@ -131,10 +146,10 @@ export default function Gallery() {
             transition={{ duration: 0.4, ease: 'easeOut' }}
             onClick={() => setActiveImage(null)}
           >
-            <motion.img 
+            <motion.img
               layoutId={shouldReduceMotion ? undefined : `gallery-img-${activeImage.id}`}
-              src={activeImage.src} 
-              alt="WAMOS Fullscreen Render" 
+              src={activeImage.src}
+              alt={t.fullscreenAlt}
               className={styles.lightboxImage}
               transition={modalSpring}
             />
