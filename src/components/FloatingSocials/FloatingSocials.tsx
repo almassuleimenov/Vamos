@@ -5,6 +5,18 @@ import { motion } from "framer-motion";
 import { Magnetic } from "@/ui/Magnetic";
 import styles from "./FloatingSocials.module.css";
 
+const dict = {
+  ru: { instagram: "Наш Instagram", whatsapp: "Наш WhatsApp" },
+  kz: { instagram: "Біздің Instagram", whatsapp: "Біздің WhatsApp" },
+  en: { instagram: "Our Instagram", whatsapp: "Our WhatsApp" },
+} as const;
+
+type Lang = keyof typeof dict;
+
+interface FloatingSocialsProps {
+  lang: string;
+}
+
 const InstagramIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={styles.icon}>
     <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
@@ -19,7 +31,9 @@ const WhatsAppIcon = () => (
   </svg>
 );
 
-export function FloatingSocials() {
+export function FloatingSocials({ lang }: FloatingSocialsProps) {
+  const t = dict[(lang as Lang)] ?? dict.ru;
+
   const [isHidden, setIsHidden] = useState(false);
 
   useEffect(() => {
@@ -46,19 +60,19 @@ export function FloatingSocials() {
       className={styles.container}
       // Анимация выезда: прячем за правый край, если isHidden === true
       initial={{ x: 100, opacity: 0 }}
-      animate={{ 
-        x: isHidden ? 100 : 0, 
-        opacity: isHidden ? 0 : 1 
+      animate={{
+        x: isHidden ? 100 : 0,
+        opacity: isHidden ? 0 : 1
       }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
     >
       <Magnetic strength={0.4}>
-        <a 
-          href="https://www.instagram.com/v_clubvillas?igsh=aDJzeW95dDhwY2Fl&utm_source=qr" 
-          target="_blank" 
-          rel="noopener noreferrer" 
+        <a
+          href="https://www.instagram.com/v_clubvillas?igsh=aDJzeW95dDhwY2Fl&utm_source=qr"
+          target="_blank"
+          rel="noopener noreferrer"
           className={styles.btn}
-          aria-label="Наш Instagram"
+          aria-label={t.instagram}
         >
           <InstagramIcon />
           <div className={`${styles.liquid} ${styles.instaLiquid}`} aria-hidden="true" />
@@ -66,12 +80,12 @@ export function FloatingSocials() {
       </Magnetic>
 
       <Magnetic strength={0.4}>
-        <a 
-          href="https://wa.me/77015292075" 
-          target="_blank" 
-          rel="noopener noreferrer" 
+        <a
+          href="https://wa.me/77015292075"
+          target="_blank"
+          rel="noopener noreferrer"
           className={styles.btn}
-          aria-label="Наш WhatsApp"
+          aria-label={t.whatsapp}
         >
           <WhatsAppIcon />
           <div className={`${styles.liquid} ${styles.waLiquid}`} aria-hidden="true" />
