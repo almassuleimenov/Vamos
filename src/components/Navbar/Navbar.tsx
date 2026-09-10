@@ -110,7 +110,7 @@ export default function Navbar({ lang }: NavbarProps) {
             {/* Логотип */}
             <div className={styles.logoCol}>
               <Link href={`/${activeLocale}`} className={styles.logo} onClick={() => setIsMobileMenuOpen(false)}>
-                WAMOS
+                VAMOS
               </Link>
             </div>
 
@@ -216,7 +216,7 @@ export default function Navbar({ lang }: NavbarProps) {
                     </button>
                   ))}
                 </div>
-                <a href="mailto:sales@wamos.kz" className={styles.mobileEmail}>sales@wamos.kz</a>
+                <a href="mailto:sales@vamos.kz" className={styles.mobileEmail}>sales@vamos.kz</a>
               </motion.div>
             </div>
           </motion.div>

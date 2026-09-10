@@ -28,42 +28,42 @@ type Locale = typeof locales[number];
 
 const metaDict: Record<Locale, Metadata> = {
   ru: {
-    title: 'WAMOS | Коммерческая недвижимость класса А',
+    title: 'VAMOS | Коммерческая недвижимость класса А',
     description:
       'Премиальные офисы и торговые площади на первой линии пр. Аль-Фараби, 75/2 в Алматы. Общая площадь: 1 071.4 м². Архитектурный проект.',
     keywords: [
-      'WAMOS',
+      'VAMOS',
       'коммерческая недвижимость Алматы',
       'Аль-Фараби',
-      'БЦ Wamos',
+      'БЦ Vamos',
       'офисы класса А',
       'торговые площади',
       'аренда офиса Алматы',
     ],
   },
   kz: {
-    title: 'WAMOS | А класты коммерциялық жылжымайтын мүлік',
+    title: 'VAMOS | А класты коммерциялық жылжымайтын мүлік',
     description:
       'Алматыдағы Әл-Фараби даңғылы, 75/2 бірінші желісіндегі премиум-класты кеңселер мен сауда алаңдары. Жалпы ауданы: 1 071.4 м². Сәулет жобасы.',
     keywords: [
-      'WAMOS',
+      'VAMOS',
       'Алматыдағы коммерциялық жылжымайтын мүлік',
       'Әл-Фараби',
-      'Wamos БО',
+      'Vamos БО',
       'А класты кеңселер',
       'сауда алаңдары',
       'Алматыда кеңсе жалдау',
     ],
   },
   en: {
-    title: 'WAMOS | Class A Commercial Real Estate',
+    title: 'VAMOS | Class A Commercial Real Estate',
     description:
       'Premium offices and retail spaces on the first line of Al-Farabi Ave, 75/2 in Almaty. Total area: 1,071.4 sq m. Architectural project.',
     keywords: [
-      'WAMOS',
+      'VAMOS',
       'commercial real estate Almaty',
       'Al-Farabi',
-      'Wamos Business Center',
+      'Vamos Business Center',
       'Class A offices',
       'retail spaces',
       'office rental Almaty',
@@ -83,7 +83,7 @@ export async function generateMetadata({
 
   return {
     ...metaDict[locale],
-    authors: [{ name: 'WAMOS' }],
+    authors: [{ name: 'VAMOS' }],
     robots: 'index, follow',
   };
 }

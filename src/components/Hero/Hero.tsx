@@ -7,15 +7,15 @@ import styles from './Hero.module.css';
 // Использование \n позволяет гибко управлять переносами строк через <br />
 const dictionaries = {
   ru: {
-    title: 'WAMOS',
+    title: 'VAMOS',
     subtitle: 'Офисы класса А и торговые площади на первой линии\nпроспекта Аль-Фараби в Алматы',
   },
   kz: {
-    title: 'WAMOS',
+    title: 'VAMOS',
     subtitle: 'Алматыдағы Әл-Фараби даңғылының бірінші желісіндегі\nА класты кеңселер мен сауда алаңдары',
   },
   en: {
-    title: 'WAMOS',
+    title: 'VAMOS',
     subtitle: 'Class A offices and retail spaces on the first line\nof Al-Farabi Avenue in Almaty',
   },
 };

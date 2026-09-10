@@ -9,7 +9,7 @@ const dict = {
     contacts: [
       { label: 'Отдел аренды и продаж', val: '+7 (727) 000-00-00', href: 'tel:+77270000000', external: false },
       { label: 'Мессенджер', val: 'WhatsApp', href: 'https://wa.me/77270000000', external: true },
-      { label: 'Email', val: 'sales@wamos.kz', href: 'mailto:sales@wamos.kz', external: false },
+      { label: 'Email', val: 'sales@vamos.kz', href: 'mailto:sales@vamos.kz', external: false },
     ],
     locationTitle: 'Локация',
     addressLines: ['г. Алматы,', 'Бостандыкский район,', 'пр. Аль-Фараби, уч. 75/2'],
@@ -19,14 +19,14 @@ const dict = {
       'Полный пакет проектной и разрешительной документации предоставляется по запросу в отделе продаж.',
       'Любая информация и визуализации на сайте носят информационный характер и не являются публичной офертой.',
     ],
-    copyright: 'Бизнес-центр Wamos. Все права защищены.',
+    copyright: 'Бизнес-центр Vamos. Все права защищены.',
     policy: 'Политика конфиденциальности',
   },
   kz: {
     contacts: [
       { label: 'Жалдау және сату бөлімі', val: '+7 (727) 000-00-00', href: 'tel:+77270000000', external: false },
       { label: 'Мессенджер', val: 'WhatsApp', href: 'https://wa.me/77270000000', external: true },
-      { label: 'Email', val: 'sales@wamos.kz', href: 'mailto:sales@wamos.kz', external: false },
+      { label: 'Email', val: 'sales@vamos.kz', href: 'mailto:sales@vamos.kz', external: false },
     ],
     locationTitle: 'Орналасуы',
     addressLines: ['Алматы қ.,', 'Бостандық ауданы,', 'Әл-Фараби даңғ., 75/2 учаскесі'],
@@ -36,14 +36,14 @@ const dict = {
       'Жобалық және рұқсат беру құжаттамасының толық пакеті сату бөліміне сұрау салу арқылы беріледі.',
       'Сайттағы кез келген ақпарат пен визуализациялар анықтамалық сипатта болып табылады және жария оферта болып саналмайды.',
     ],
-    copyright: 'Wamos бизнес-орталығы. Барлық құқықтар қорғалған.',
+    copyright: 'Vamos бизнес-орталығы. Барлық құқықтар қорғалған.',
     policy: 'Құпиялылық саясаты',
   },
   en: {
     contacts: [
       { label: 'Leasing & Sales', val: '+7 (727) 000-00-00', href: 'tel:+77270000000', external: false },
       { label: 'Messenger', val: 'WhatsApp', href: 'https://wa.me/77270000000', external: true },
-      { label: 'Email', val: 'sales@wamos.kz', href: 'mailto:sales@wamos.kz', external: false },
+      { label: 'Email', val: 'sales@vamos.kz', href: 'mailto:sales@vamos.kz', external: false },
     ],
     locationTitle: 'Location',
     addressLines: ['Almaty,', 'Bostandyk District,', 'Al-Farabi Ave, plot 75/2'],
@@ -53,7 +53,7 @@ const dict = {
       'The full package of design and permitting documentation is available on request from the sales department.',
       'Any information and visualizations on the website are for reference only and do not constitute a public offer.',
     ],
-    copyright: 'Wamos Business Center. All rights reserved.',
+    copyright: 'Vamos Business Center. All rights reserved.',
     policy: 'Privacy Policy',
   },
 } as const;
@@ -117,7 +117,7 @@ export default function Footer({ lang }: FooterProps) {
           {/* Колонка 1: Бренд и Контакты (1-4) */}
           <div className={styles.brandCol}>
             <div className={styles.mask}>
-              <motion.div variants={maskVariants} className={styles.logo}>WAMOS</motion.div>
+              <motion.div variants={maskVariants} className={styles.logo}>VAMOS</motion.div>
             </div>
 
             <address className={styles.contacts}>
