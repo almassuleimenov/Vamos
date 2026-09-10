@@ -1,5 +1,5 @@
 .footer {
-  width: 100vw;
+  width: 100%;
   background-color: var(--surface);
   color: var(--text);
   border-top: 1px solid var(--border);

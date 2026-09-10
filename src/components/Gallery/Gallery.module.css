@@ -2,7 +2,7 @@
   --gallery-bg: var(--bg);
   --lightbox-bg: rgba(0, 0, 0, 0.85); /* Apple-style темная подложка для фото */
   
-  width: 100vw;
+  width: 100%;
   padding: var(--space-xxl) 0;
   background-color: var(--gallery-bg);
   overflow-x: hidden;
@@ -140,7 +140,7 @@
   }
   
   .lightboxImage {
-    width: 100vw;
+    width: 100%;
     height: 100vh;
   }
 }

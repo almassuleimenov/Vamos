@@ -1,5 +1,5 @@
 .about {
-  width: 100vw;
+  width: 100%;
   padding: var(--space-xxl) 0;
   background-color: var(--bg);
   color: var(--text);
@@ -170,7 +170,7 @@
 
 @media (max-width: 768px) {
   .container {
-    padding: 0 var(--space-md);
+    padding: 0 var(--space-xl);
   }
   
   .gridRow {

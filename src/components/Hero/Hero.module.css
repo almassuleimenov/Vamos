@@ -1,5 +1,5 @@
 .hero {
-  width: 100vw;
+  width: 100%;
   height: 100svh;
   min-height: 600px;
   display: grid;
@@ -118,9 +118,9 @@
 
   .content {
     flex: 1;
-    min-height: 40vh;
+    min-height: 50vh;
     border-right: none;
-    padding: var(--space-md);
+    padding: var(--space-xl) var(--space-lg);
     justify-content: center;
   }
 
