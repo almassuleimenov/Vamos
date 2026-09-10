@@ -1,6 +1,7 @@
 .plans {
   width: 100%;
-  padding: var(--space-xxl) 0;
+  /* Динамический вертикальный отступ: меньше на телефонах, больше на десктопе */
+  padding: clamp(var(--space-xl), 8vw, var(--space-xxl)) 0;
   background-color: var(--bg);
   border-bottom: 1px solid var(--plans-border);
   color: var(--text);
@@ -11,13 +12,15 @@
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
-  padding: 0 var(--space-lg);
+  /* Плавный горизонтальный паддинг от мобилки (md) к десктопу (lg) */
+  padding: 0 clamp(var(--space-md), 4vw, var(--space-lg));
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  gap: var(--space-xl) var(--space-md);
+  /* Вертикальный gap больше на широких экранах, горизонтальный фиксированный */
+  gap: clamp(var(--space-lg), 5vw, var(--space-xl)) var(--space-md);
 }
 
 /* Левая колонка */
@@ -28,10 +31,6 @@
   gap: var(--space-md);
 }
 
-/* 
-  Маска для эффекта выезда (Mask Reveal). 
-  padding/margin фиксят обрезание нижних хвостов у букв (descenders).
-*/
 .mask {
   overflow: hidden;
   padding-bottom: 0.1em;
@@ -41,16 +40,16 @@
 
 .title {
   font-family: var(--font-display);
-  font-size: var(--text-xl);
+  /* Плавное масштабирование заголовка: минимум 1.75rem, максимум var(--text-xl) */
+  font-size: clamp(1.75rem, 4vw, var(--text-xl));
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: -0.02em;
-  line-height: 1;
+  line-height: 1.1;
   margin: 0;
   will-change: transform;
 }
 
-/* Линия: ширина фиксированная, анимируем GPU-свойство scaleX */
 .divider {
   width: 100%;
   max-width: 80px;
@@ -62,7 +61,8 @@
 
 .desc {
   font-family: var(--font-display);
-  font-size: var(--text-base);
+  /* Сохраняем читабельность на любых экранах, не давая тексту стать слишком мелким */
+  font-size: clamp(1rem, 1.5vw, var(--text-base));
   line-height: 1.5;
   color: var(--muted);
   margin: 0;
@@ -75,7 +75,6 @@
   will-change: transform, opacity;
 }
 
-/* Стилизация штампа чертежа */
 .blueprintCard {
   display: flex;
   flex-direction: column;
@@ -83,13 +82,11 @@
   color: inherit;
   border: 1px solid var(--plans-border);
   background-color: transparent;
-  /* Анимируем только цвет фона и рамки */
   transition: background-color 0.4s ease, border-color 0.4s ease;
   cursor: pointer;
   outline: none;
 }
 
-/* Ховер только для мыши */
 @media (hover: hover) and (pointer: fine) {
   .blueprintCard:hover {
     background-color: var(--plans-hover-bg);
@@ -102,7 +99,7 @@
   outline-offset: 4px;
 }
 
-/* Метаданные (верх) — теперь 2 колонки */
+/* Метаданные (верх) */
 .cardHeader {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -131,8 +128,9 @@
 
 .metaValue {
   font-family: var(--font-mono);
-  font-size: var(--text-sm);
+  font-size: clamp(0.875rem, 1.2vw, var(--text-sm));
   color: var(--text);
+  word-break: break-word; /* Защита от длинных неразрывных строк */
 }
 
 /* Кнопка-призыв (низ) */
@@ -140,13 +138,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-lg) var(--space-md);
+  /* Гарантированная зона тапа для кнопки: padding + min-height */
+  padding: clamp(var(--space-md), 2vw, var(--space-lg)) var(--space-md);
+  min-height: 72px;
 }
 
 .actionText {
   font-family: var(--font-display);
-  font-size: var(--text-lg);
-  font-weight: 400;
+  font-size: clamp(1rem, 2vw, var(--text-lg));
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: -0.01em;
 }
@@ -160,6 +160,7 @@
   justify-content: center;
   width: 24px;
   height: 24px;
+  flex-shrink: 0;
 }
 
 .arrowIcon,
@@ -198,39 +199,51 @@
   }
 }
 
-/* Адаптив */
+/* --- Адаптив --- */
+
+/* Ноутбуки и планшеты (ландшафт) */
 @media (max-width: 1024px) {
-  .infoCol { grid-column: 1 / 6; }
-  .downloadCol { grid-column: 6 / 13; }
-  
+  .infoCol { 
+    grid-column: 1 / 6; 
+  }
+  .downloadCol { 
+    grid-column: 6 / 13; 
+  }
   .cardHeader {
     grid-template-columns: 1fr 1fr;
   }
 }
 
+/* Планшеты (портрет) и мобильные устройства */
 @media (max-width: 768px) {
-  .container {
-    padding: 0 var(--space-xl);
-  }
   .grid {
+    /* Переводим сложную 12-колоночную сетку в надежный Flex-стек */
+    display: flex; 
+    flex-direction: column;
     gap: var(--space-lg);
   }
   .infoCol, .downloadCol {
-    grid-column: 1 / -1;
+    width: 100%;
   }
-  
   .cardHeader {
     grid-template-columns: 1fr;
   }
   .metaCell {
     border-right: none;
     border-bottom: 1px solid var(--plans-border);
+    padding: var(--space-sm) var(--space-md);
   }
   .metaCell:last-child {
     border-bottom: none;
   }
-  
+}
+
+/* Специфично для узких телефонов (< 480px, например iPhone SE) */
+@media (max-width: 480px) {
+  .cardBody {
+    min-height: 64px; /* Поддерживаем минимальный стандарт Apple для кнопок */
+  }
   .actionText {
-    font-size: var(--text-md);
+    max-width: 80%; /* Защищаем текст от наезда на иконку при очень узких экранах */
   }
 }
