@@ -1,5 +1,5 @@
 .plans {
-  width: 100vw;
+  width: 100%;
   padding: var(--space-xxl) 0;
   background-color: var(--bg);
   border-bottom: 1px solid var(--plans-border);
@@ -210,7 +210,7 @@
 
 @media (max-width: 768px) {
   .container {
-    padding: 0 var(--space-md);
+    padding: 0 var(--space-xl);
   }
   .grid {
     gap: var(--space-lg);

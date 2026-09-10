@@ -4,7 +4,7 @@
   --loc-bg: var(--bg);
   --loc-map-filter: contrast(1.02) saturate(0.9);
 
-  width: 100vw;
+  width: 100%;
   background-color: var(--loc-bg);
   border-top: 1px solid var(--loc-border);
   border-bottom: 1px solid var(--loc-border);
@@ -24,7 +24,7 @@
 /* --- Контент (Левая часть) --- */
 .content {
   /* Динамический паддинг: прижимаем левый край контента точно к сетке 1440px контейнера */
-  padding-left: max(var(--space-lg), calc((100vw - 1440px) / 2));
+  padding-left: max(var(--space-lg), calc((100% - 1440px) / 2));
   padding-right: var(--space-xl);
   padding-top: var(--space-xxl);
   padding-bottom: var(--space-xxl);
