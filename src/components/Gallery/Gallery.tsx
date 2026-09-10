@@ -14,9 +14,9 @@ const images = [
 
 // Локализация alt-текстов (ru/kz/en)
 const dict = {
-  ru: { alt: 'Рендер WAMOS', fullscreenAlt: 'Полноэкранный рендер WAMOS' },
-  kz: { alt: 'WAMOS рендері', fullscreenAlt: 'WAMOS толық экранды рендері' },
-  en: { alt: 'WAMOS Render', fullscreenAlt: 'WAMOS Fullscreen Render' },
+  ru: { alt: 'Рендер VAMOS', fullscreenAlt: 'Полноэкранный рендер VAMOS' },
+  kz: { alt: 'VAMOS рендері', fullscreenAlt: 'VAMOS толық экранды рендері' },
+  en: { alt: 'VAMOS Render', fullscreenAlt: 'VAMOS Fullscreen Render' },
 } as const;
 
 type Lang = keyof typeof dict;

@@ -8,7 +8,7 @@ const dict = {
     eyebrow: 'Локация',
     title: 'Аль-Фараби, 75/2',
     subtitle: 'Первая линия. Стратегический доступ к ключевым точкам Алматы.',
-    mapTitle: 'Расположение WAMOS',
+    mapTitle: 'Расположение VAMOS',
     advantages: [
       { time: '01', unit: 'мин', desc: 'Удобный выезд на главную магистраль — проспект Аль-Фараби' },
       { time: '04', unit: 'мин', desc: 'На авто до ТРЦ Mega Center Alma-Ata' },
@@ -20,7 +20,7 @@ const dict = {
     eyebrow: 'Орналасуы',
     title: 'Әл-Фараби, 75/2',
     subtitle: 'Бірінші желі. Алматының негізгі нүктелеріне стратегиялық қолжетімділік.',
-    mapTitle: 'WAMOS орналасуы',
+    mapTitle: 'VAMOS орналасуы',
     advantages: [
       { time: '01', unit: 'мин', desc: 'Негізгі магистральға — Әл-Фараби даңғылына ыңғайлы шығу' },
       { time: '04', unit: 'мин', desc: 'Көлікпен Mega Center Alma-Ata сауда орталығына дейін' },
@@ -32,7 +32,7 @@ const dict = {
     eyebrow: 'Location',
     title: 'Al-Farabi, 75/2',
     subtitle: 'First line. Strategic access to Almaty\u2019s key points.',
-    mapTitle: 'WAMOS Location',
+    mapTitle: 'VAMOS Location',
     advantages: [
       { time: '01', unit: 'min', desc: 'Convenient exit onto the main artery — Al-Farabi Avenue' },
       { time: '04', unit: 'min', desc: 'By car to Mega Center Alma-Ata mall' },

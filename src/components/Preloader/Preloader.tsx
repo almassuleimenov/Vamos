@@ -8,7 +8,7 @@ import styles from './Preloader.module.css';
 const revealEase = [0.16, 1, 0.3, 1]; // Резкий старт, долгое скольжение
 const exitEase = [0.76, 0, 0.24, 1];  // Монументальный Expo In-Out для шторки
 
-const word = 'WAMOS';
+const word = 'VAMOS';
 
 export default function Preloader() {
   const [isLoading, setIsLoading] = useState(true);
