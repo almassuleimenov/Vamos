@@ -7,6 +7,11 @@ const defaultLocale = 'ru';
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // 1. Ранний возврат для API-роутов. Middleware не должен трогать бэкенд.
+  if (pathname.startsWith('/api')) {
+    return NextResponse.next();
+  }
+
   const pathnameHasLocale = locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
@@ -19,6 +24,6 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Игнорируем системные пути Next.js и статические файлы (картинки, видео)
-  matcher: ['/((?!_next|photos|ama2|ama3|.*\\..*).*)'],
+  // 2. Добавлен 'api' в регулярное выражение игнорирования
+  matcher: ['/((?!api|_next|photos|ama2|ama3|.*\\..*).*)'],
 };

@@ -103,9 +103,27 @@ export default function CtaForm({ lang }: CtaFormProps) {
     if (phone.length < 18) return;
 
     setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1200));
-    setIsSubmitting(false);
-    setIsSuccess(true);
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone }),
+      });
+
+      if (!res.ok) {
+        // Читаем реальную ошибку от Next.js
+        const errorData = await res.json().catch(() => ({}));
+        console.error('💥 Детали ошибки от сервера:', errorData);
+        throw new Error(`Бэкенд вернул ${res.status}: ${errorData.error || 'Неизвестная ошибка'}`);
+      }
+      
+      setIsSuccess(true);
+    } catch (error) {
+      console.error('Ошибка при отправке:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Варианты для контейнера (каскад)
