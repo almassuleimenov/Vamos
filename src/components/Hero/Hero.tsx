@@ -8,15 +8,15 @@ import styles from './Hero.module.css';
 const dictionaries = {
   ru: {
     title: 'VAMOS',
-    subtitle: 'Офисы класса А и торговые площади на первой линии\nпроспекта Аль-Фараби в Алматы',
+    subtitle: 'Отдельно стоящее здание класса А на первой линии\nпроспекта Аль-Фараби. Продажа единым лотом.',
   },
   kz: {
     title: 'VAMOS',
-    subtitle: 'Алматыдағы Әл-Фараби даңғылының бірінші желісіндегі\nА класты кеңселер мен сауда алаңдары',
+    subtitle: 'Әл-Фараби даңғылының бірінші желісіндегі А класты\nғимарат. Біртұтас лотпен сатылады.',
   },
   en: {
     title: 'VAMOS',
-    subtitle: 'Class A offices and retail spaces on the first line\nof Al-Farabi Avenue in Almaty',
+    subtitle: 'Class A standalone building on the first line\nof Al-Farabi Avenue. Sold as a single asset.',
   },
 };
 

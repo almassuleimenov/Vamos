@@ -28,45 +28,43 @@ type Locale = typeof locales[number];
 
 const metaDict: Record<Locale, Metadata> = {
   ru: {
-    title: 'VAMOS | Коммерческая недвижимость класса А',
+    title: 'VAMOS | Продажа коммерческого здания класса А',
     description:
-      'Премиальные офисы и торговые площади на первой линии пр. Аль-Фараби, 75/2 в Алматы. Общая площадь: 1 071.4 м². Архитектурный проект.',
+      'Отдельно стоящее здание класса А на первой линии пр. Аль-Фараби, 75/2 в Алматы. Продажа единым лотом. Общая площадь: 1 071.4 м².',
     keywords: [
       'VAMOS',
       'коммерческая недвижимость Алматы',
       'Аль-Фараби',
       'БЦ Vamos',
-      'офисы класса А',
-      'торговые площади',
-      'аренда офиса Алматы',
+      'продажа здания Алматы',
+      'коммерческое здание целиком',
+      'инвестиции в недвижимость',
     ],
   },
   kz: {
-    title: 'VAMOS | А класты коммерциялық жылжымайтын мүлік',
+    title: 'VAMOS | А класты коммерциялық ғимаратты сату',
     description:
-      'Алматыдағы Әл-Фараби даңғылы, 75/2 бірінші желісіндегі премиум-класты кеңселер мен сауда алаңдары. Жалпы ауданы: 1 071.4 м². Сәулет жобасы.',
+      'Алматыдағы Әл-Фараби даңғылы, 75/2 бірінші желісіндегі А класты ғимарат. Біртұтас лотпен сатылады. Жалпы ауданы: 1 071.4 м².',
     keywords: [
       'VAMOS',
       'Алматыдағы коммерциялық жылжымайтын мүлік',
       'Әл-Фараби',
       'Vamos БО',
-      'А класты кеңселер',
-      'сауда алаңдары',
-      'Алматыда кеңсе жалдау',
+      'ғимаратты сату',
+      'коммерциялық ғимарат',
     ],
   },
   en: {
-    title: 'VAMOS | Class A Commercial Real Estate',
+    title: 'VAMOS | Class A Commercial Building for Sale',
     description:
-      'Premium offices and retail spaces on the first line of Al-Farabi Ave, 75/2 in Almaty. Total area: 1,071.4 sq m. Architectural project.',
+      'Class A standalone building on the first line of Al-Farabi Ave, 75/2 in Almaty. Sold as a single lot. Total area: 1,071.4 sq m.',
     keywords: [
       'VAMOS',
       'commercial real estate Almaty',
       'Al-Farabi',
       'Vamos Business Center',
-      'Class A offices',
-      'retail spaces',
-      'office rental Almaty',
+      'building for sale Almaty',
+      'single asset real estate',
     ],
   },
 };

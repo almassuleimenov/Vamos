@@ -6,9 +6,9 @@ import styles from './CtaForm.module.css';
 
 const dict = {
   ru: {
-    title: 'Обсудить проект',
+    title: 'Обсудить покупку',
     subtitle:
-      'Оставьте контактные данные, и мы свяжемся с вами для организации приватного показа здания и обсуждения коммерческих условий.',
+      'Оставьте контактные данные для организации приватного показа и обсуждения условий покупки здания целиком.',
     nameLabel: 'Имя',
     namePlaceholder: 'Ваше имя',
     phoneLabel: 'Телефон',
@@ -20,9 +20,9 @@ const dict = {
     successText: 'Наш представитель свяжется с вами в ближайшее время.',
   },
   kz: {
-    title: 'Жобаны талқылау',
+    title: 'Сатып алуды талқылау',
     subtitle:
-      'Байланыс деректерін қалдырыңыз, біз ғимаратты жеке көрсету және коммерциялық шарттарды талқылау үшін сізбен хабарласамыз.',
+      'Жеке көрсетілімді ұйымдастыру және ғимаратты толығымен сатып алу шарттарын талқылау үшін байланыс деректеріңізді қалдырыңыз.',
     nameLabel: 'Аты',
     namePlaceholder: 'Атыңыз',
     phoneLabel: 'Телефон',
@@ -34,9 +34,9 @@ const dict = {
     successText: 'Біздің өкіліміз жақын арада сізбен хабарласады.',
   },
   en: {
-    title: 'Discuss the project',
+    title: 'Discuss purchase',
     subtitle:
-      'Leave your contact details and we will reach out to arrange a private viewing of the building and discuss commercial terms.',
+      'Leave your contact details to arrange a private viewing and discuss the terms for purchasing the entire building.',
     nameLabel: 'Name',
     namePlaceholder: 'Your name',
     phoneLabel: 'Phone',

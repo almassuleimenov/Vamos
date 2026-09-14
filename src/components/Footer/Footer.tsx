@@ -7,7 +7,7 @@ import styles from './Footer.module.css';
 const dict = {
   ru: {
     contacts: [
-      { label: 'Отдел аренды и продаж', val: '+7 (700) 711 17 71', href: 'tel:+77007111771', external: false },
+      { label: 'Отдел продаж', val: '+7 (700) 711 17 71', href: 'tel:+77007111771', external: false },
       { label: 'Мессенджер', val: 'WhatsApp', href: 'https://wa.me/77007111771', external: true },
       { label: 'Instagram', val: '@vamos.alm', href: 'https://www.instagram.com/vamos.alm?stkn=MWN2c2IzeTN0aDJkbg==', external: true },
     ],
@@ -19,12 +19,12 @@ const dict = {
       'Полный пакет проектной и разрешительной документации предоставляется по запросу в отделе продаж.',
       'Любая информация и визуализации на сайте носят информационный характер и не являются публичной офертой.',
     ],
-    copyright: 'Бизнес-центр Vamos. Все права защищены.',
+    copyright: 'Vamos. Все права защищены.',
     policy: 'Политика конфиденциальности',
   },
   kz: {
     contacts: [
-      { label: 'Жалдау және сату бөлімі', val: '+7 (700) 711 17 71', href: 'tel:+77007111771', external: false },
+      { label: 'Сату бөлімі', val: '+7 (700) 711 17 71', href: 'tel:+77007111771', external: false },
       { label: 'Мессенджер', val: 'WhatsApp', href: 'https://wa.me/77007111771', external: true },
       { label: 'Instagram', val: '@vamos.alm', href: 'https://www.instagram.com/vamos.alm?stkn=MWN2c2IzeTN0aDJkbg==', external: true },
     ],
@@ -36,12 +36,12 @@ const dict = {
       'Жобалық және рұқсат беру құжаттамасының толық пакеті сату бөліміне сұрау салу арқылы беріледі.',
       'Сайттағы кез келген ақпарат пен визуализациялар анықтамалық сипатта болып табылады және жария оферта болып саналмайды.',
     ],
-    copyright: 'Vamos бизнес-орталығы. Барлық құқықтар қорғалған.',
+    copyright: 'Vamos. Барлық құқықтар қорғалған.',
     policy: 'Құпиялылық саясаты',
   },
   en: {
     contacts: [
-      { label: 'Leasing & Sales', val: '+7 (700) 711 17 71', href: 'tel:+77007111771', external: false },
+      { label: 'Sales Department', val: '+7 (700) 711 17 71', href: 'tel:+77007111771', external: false },
       { label: 'Messenger', val: 'WhatsApp', href: 'https://wa.me/77007111771', external: true },
       { label: 'Instagram', val: '@vamos.alm', href: 'https://www.instagram.com/vamos.alm?stkn=MWN2c2IzeTN0aDJkbg==', external: true },
     ],
@@ -53,7 +53,7 @@ const dict = {
       'The full package of design and permitting documentation is available on request from the sales department.',
       'Any information and visualizations on the website are for reference only and do not constitute a public offer.',
     ],
-    copyright: 'Vamos Business Center. All rights reserved.',
+    copyright: 'Vamos. All rights reserved.',
     policy: 'Privacy Policy',
   },
 } as const;
