@@ -87,13 +87,6 @@
   outline: none;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .blueprintCard:hover {
-    background-color: var(--plans-hover-bg);
-    border-color: var(--text);
-  }
-}
-
 .blueprintCard:focus-visible {
   outline: 2px solid var(--text);
   outline-offset: 4px;
@@ -133,25 +126,33 @@
   word-break: break-word; /* Защита от длинных неразрывных строк */
 }
 
-/* Кнопка-призыв (низ) */
-.cardBody {
+/* --- Зона с кнопкой (низ) --- */
+.cardFooter {
+  padding: clamp(var(--space-sm), 2vw, var(--space-md));
+}
+
+.downloadBtn {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* Гарантированная зона тапа для кнопки: padding + min-height */
-  padding: clamp(var(--space-md), 2vw, var(--space-lg)) var(--space-md);
-  min-height: 72px;
+  padding: clamp(12px, 1.5vw, 16px) clamp(16px, 2vw, 24px);
+  /* Инвертируем цвета для создания контрастной кнопки */
+  background-color: var(--text);
+  color: var(--bg);
+  /* Легкое скругление для очевидного паттерна кнопки */
+  border-radius: 4px;
+  transition: opacity 0.3s ease;
 }
 
 .actionText {
   font-family: var(--font-display);
-  font-size: clamp(1rem, 2vw, var(--text-lg));
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.02em;
 }
 
-/* --- Бесшовный ховер иконки --- */
+/* Бесшовный ховер иконки */
 .iconWrapper {
   position: relative;
   overflow: hidden;
@@ -168,7 +169,8 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  color: var(--text);
+  /* Цвет наследуется от .downloadBtn (color: var(--bg)) */
+  color: inherit; 
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
 }
@@ -178,6 +180,13 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
+  .blueprintCard:hover {
+    background-color: var(--plans-hover-bg);
+    border-color: var(--text);
+  }
+  .blueprintCard:hover .downloadBtn {
+    opacity: 0.9;
+  }
   .blueprintCard:hover .arrowIcon {
     transform: translateY(100%);
   }
@@ -186,7 +195,7 @@
   }
 }
 
-/* --- Fallback для Reduced Motion --- */
+/* Fallback для Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   .arrowIcon, .arrowIconHover {
     transition: none !important;
@@ -240,10 +249,10 @@
 
 /* Специфично для узких телефонов (< 480px, например iPhone SE) */
 @media (max-width: 480px) {
-  .cardBody {
-    min-height: 64px; /* Поддерживаем минимальный стандарт Apple для кнопок */
+  .downloadBtn {
+    min-height: 56px; /* Поддерживаем минимальный стандарт Apple для кнопок */
   }
   .actionText {
-    max-width: 80%; /* Защищаем текст от наезда на иконку при очень узких экранах */
+    max-width: 85%; /* Защищаем текст от наезда на иконку при очень узких экранах */
   }
 }

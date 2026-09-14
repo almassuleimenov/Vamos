@@ -128,12 +128,12 @@ export default function FloorPlans({ lang }: FloorPlansProps) {
             viewport={{ once: true, amount: 0.3 }}
           >
             <a 
-  href="/document.pdf" 
-  download={dict.downloadName}
-  target="_blank" // <- Обязательно для мобильных
-  rel="noopener noreferrer" // <- Безопасность при target="_blank"
-  className={styles.blueprintCard}
->
+              href="/document.pdf" 
+              download={dict.downloadName}
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className={styles.blueprintCard}
+            >
               {/* Верхняя часть карточки с метаданными */}
               <div className={styles.cardHeader}>
                 <div className={styles.metaCell}>
@@ -146,20 +146,22 @@ export default function FloorPlans({ lang }: FloorPlansProps) {
                 </div>
               </div>
 
-              {/* Нижняя часть карточки с призывом */}
-              <div className={styles.cardBody}>
-                <span className={styles.actionText}>{dict.actionText}</span>
-                <div className={styles.iconWrapper}>
-                  {/* Основная иконка */}
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className={styles.arrowIcon}>
-                    <line x1="12" y1="3" x2="12" y2="19" strokeWidth="1.5" strokeLinecap="square" />
-                    <polyline points="5 12 12 19 19 12" strokeWidth="1.5" strokeLinecap="square" strokeLinejoin="miter" />
-                  </svg>
-                  {/* Иконка, которая прилетает сверху при ховере */}
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className={styles.arrowIconHover}>
-                    <line x1="12" y1="3" x2="12" y2="19" strokeWidth="1.5" strokeLinecap="square" />
-                    <polyline points="5 12 12 19 19 12" strokeWidth="1.5" strokeLinecap="square" strokeLinejoin="miter" />
-                  </svg>
+              {/* Нижняя часть карточки с явно выделенной кнопкой */}
+              <div className={styles.cardFooter}>
+                <div className={styles.downloadBtn}>
+                  <span className={styles.actionText}>{dict.actionText}</span>
+                  <div className={styles.iconWrapper}>
+                    {/* Основная иконка */}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className={styles.arrowIcon}>
+                      <line x1="12" y1="3" x2="12" y2="19" strokeWidth="1.5" strokeLinecap="square" />
+                      <polyline points="5 12 12 19 19 12" strokeWidth="1.5" strokeLinecap="square" strokeLinejoin="miter" />
+                    </svg>
+                    {/* Иконка, которая прилетает сверху при ховере */}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className={styles.arrowIconHover}>
+                      <line x1="12" y1="3" x2="12" y2="19" strokeWidth="1.5" strokeLinecap="square" />
+                      <polyline points="5 12 12 19 19 12" strokeWidth="1.5" strokeLinecap="square" strokeLinejoin="miter" />
+                    </svg>
+                  </div>
                 </div>
               </div>
             </a>
