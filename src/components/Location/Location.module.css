@@ -11,19 +11,13 @@
   overflow-x: hidden;
 }
 
-/* 
-  Асимметричный сплит.
-  Левая колонка занимает 5 долей, правая — 7.
-*/
 .grid {
   display: grid;
   grid-template-columns: 5fr 7fr;
   width: 100%;
 }
 
-/* --- Контент (Левая часть) --- */
 .content {
-  /* Динамический паддинг: прижимаем левый край контента точно к сетке 1440px контейнера */
   padding-left: max(var(--space-lg), calc((100% - 1440px) / 2));
   padding-right: var(--space-xl);
   padding-top: var(--space-xxl);
@@ -37,7 +31,6 @@
   margin-bottom: var(--space-xl);
 }
 
-/* Обертка для кинематографичного выезда текста */
 .mask {
   overflow: hidden;
   padding-bottom: 0.1em;
@@ -47,8 +40,8 @@
 
 .eyebrow {
   display: block;
-  font-family: var(--font-mono);
   font-size: 0.75rem;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--loc-muted);
@@ -57,7 +50,6 @@
 }
 
 .title {
-  font-family: var(--font-display);
   font-size: var(--text-lg);
   font-weight: 500;
   line-height: 1.1;
@@ -68,22 +60,20 @@
 }
 
 .subtitle {
-  font-family: var(--font-display);
   font-size: var(--text-base);
+  font-weight: 400;
   color: var(--loc-muted);
   line-height: 1.4;
   max-width: 90%;
   will-change: transform;
 }
 
-/* --- Таблица преимуществ --- */
 .advantages {
   position: relative;
   display: flex;
   flex-direction: column;
 }
 
-/* Физические линии бордеров (GPU) */
 .advBorderTop,
 .advBorderBottom {
   position: absolute;
@@ -120,15 +110,15 @@
 }
 
 .advTime {
-  font-family: var(--font-mono);
   font-size: var(--text-md);
+  font-weight: 500;
   line-height: 1;
   color: var(--text);
 }
 
 .advUnit {
-  font-family: var(--font-mono);
   font-size: 0.65rem;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--loc-muted);
@@ -136,14 +126,13 @@
 }
 
 .advDesc {
-  font-family: var(--font-display);
   font-size: var(--text-sm);
+  font-weight: 400;
   line-height: 1.4;
   color: var(--text);
   max-width: 400px;
 }
 
-/* --- Карта (Правая часть) --- */
 .mapContainer {
   position: relative;
   width: 100%;
@@ -180,7 +169,6 @@
   }
 }
 
-/* Оверлей-заглушка от случайного скролла колесиком */
 .mapOverlay {
   position: absolute;
   inset: 0;
@@ -188,14 +176,12 @@
   background: transparent;
 }
 
-/* --- Адаптив --- */
 @media (max-width: 1024px) {
   .grid {
     grid-template-columns: 1fr;
   }
   
   .content {
-    /* На планшетах возвращаем стандартные отступы */
     padding: var(--space-xl) var(--space-lg);
     max-width: 700px;
     margin: 0 auto;

@@ -10,10 +10,9 @@ const dict = {
     subtitle: 'Первая линия. Стратегический доступ к ключевым точкам Алматы.',
     mapTitle: 'Расположение VAMOS',
     advantages: [
-      { time: '01', unit: 'мин', desc: 'Удобный выезд на главную магистраль — проспект Аль-Фараби' },
-      { time: '04', unit: 'мин', desc: 'На авто до ТРЦ Mega Center Alma-Ata' },
-      { time: '07', unit: 'мин', desc: 'До Esentai Mall и финансового кластера города' },
-      { time: '—', unit: 'паркинг', desc: 'Места непосредственно у здания и комфортный подъезд спецтехники' },
+      { time: '—', unit: 'доступ', desc: 'Прямой выезд на проспект Аль-Фараби' },
+      { time: '03', unit: 'мин', desc: 'До комплекса Villa Dei Fiori' },
+      { time: '04', unit: 'мин', desc: 'До Esentai Mall и финансового кластера' },
     ],
   },
   kz: {
@@ -22,22 +21,20 @@ const dict = {
     subtitle: 'Бірінші желі. Алматының негізгі нүктелеріне стратегиялық қолжетімділік.',
     mapTitle: 'VAMOS орналасуы',
     advantages: [
-      { time: '01', unit: 'мин', desc: 'Негізгі магистральға — Әл-Фараби даңғылына ыңғайлы шығу' },
-      { time: '04', unit: 'мин', desc: 'Көлікпен Mega Center Alma-Ata сауда орталығына дейін' },
-      { time: '07', unit: 'мин', desc: 'Esentai Mall және қаланың қаржы кластеріне дейін' },
-      { time: '—', unit: 'тұрақ', desc: 'Ғимараттың жанында арнайы техникаға ыңғайлы кіреберісі бар орындар' },
+      { time: '—', unit: 'бағыт', desc: 'Әл-Фараби даңғылына тікелей шығу' },
+      { time: '03', unit: 'мин', desc: 'Villa Dei Fiori кешеніне дейін' },
+      { time: '04', unit: 'мин', desc: 'Esentai Mall және қаланың қаржы кластеріне дейін' },
     ],
   },
   en: {
     eyebrow: 'Location',
     title: 'Al-Farabi, 75/2',
-    subtitle: 'First line. Strategic access to Almaty\u2019s key points.',
+    subtitle: 'First line. Strategic access to Almaty’s key points.',
     mapTitle: 'VAMOS Location',
     advantages: [
-      { time: '01', unit: 'min', desc: 'Convenient exit onto the main artery — Al-Farabi Avenue' },
-      { time: '04', unit: 'min', desc: 'By car to Mega Center Alma-Ata mall' },
-      { time: '07', unit: 'min', desc: 'To Esentai Mall and the city\u2019s financial cluster' },
-      { time: '—', unit: 'parking', desc: 'Spaces right by the building with easy access for service vehicles' },
+      { time: '—', unit: 'access', desc: 'Direct exit to Al-Farabi Avenue' },
+      { time: '03', unit: 'min', desc: 'To Villa Dei Fiori complex' },
+      { time: '04', unit: 'min', desc: 'To Esentai Mall and the city’s financial cluster' },
     ],
   },
 } as const;
@@ -52,10 +49,8 @@ const customEase = [0.16, 1, 0.3, 1] as any;
 
 export default function Location({ lang }: LocationProps) {
   const t = dict[(lang as Lang)] ?? dict.ru;
-
   const shouldReduceMotion = useReducedMotion();
 
-  // Хореография левой колонки
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -64,7 +59,6 @@ export default function Location({ lang }: LocationProps) {
     },
   };
 
-  // Mask Reveal для типографики
   const textVariants = {
     hidden: { y: shouldReduceMotion ? 0 : '100%', opacity: shouldReduceMotion ? 0 : 1 },
     show: {
@@ -74,7 +68,6 @@ export default function Location({ lang }: LocationProps) {
     },
   };
 
-  // Элементы списка (смещение + фейд)
   const itemVariants = {
     hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 16 },
     show: {
@@ -84,7 +77,6 @@ export default function Location({ lang }: LocationProps) {
     },
   };
 
-  // GPU-линии (transform: scaleX)
   const lineVariants = {
     hidden: { scaleX: 0 },
     show: {
@@ -97,7 +89,6 @@ export default function Location({ lang }: LocationProps) {
     <section className={styles.location} id="location">
       <div className={styles.grid}>
 
-        {/* Левая колонка: Контент */}
         <motion.div
           className={styles.content}
           variants={containerVariants}
@@ -124,7 +115,6 @@ export default function Location({ lang }: LocationProps) {
           </div>
 
           <div className={styles.advantages}>
-            {/* Верхняя линия таблицы */}
             <motion.div variants={lineVariants} className={styles.advBorderTop} />
 
             {t.advantages.map((adv, idx) => (
@@ -134,14 +124,12 @@ export default function Location({ lang }: LocationProps) {
                   <span className={styles.advUnit}>{adv.unit}</span>
                 </div>
                 <p className={styles.advDesc}>{adv.desc}</p>
-                {/* Линия-разделитель (GPU) */}
                 <motion.div variants={lineVariants} className={styles.advBorderBottom} />
               </motion.div>
             ))}
           </div>
         </motion.div>
 
-        {/* Правая колонка: Карта без полей */}
         <div className={styles.mapContainer}>
           <motion.div
             className={styles.mapWrapper}
