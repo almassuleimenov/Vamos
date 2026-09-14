@@ -24,6 +24,12 @@
   padding-top: var(--space-lg);
 }
 
+/* Убираем верхнюю линию у самого первого блока, чтобы она не болталась в воздухе */
+.gridRow:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
 .titleCol {
   grid-column: 1 / 5;
 }
@@ -59,7 +65,6 @@
   will-change: transform, opacity;
 }
 
-/* Засечка теперь отдельный div для GPU-анимации scaleX */
 .metricTick {
   position: absolute;
   top: 0;
@@ -74,7 +79,7 @@
 .metricMarker {
   position: absolute;
   top: -7px;
-  left: 32px; /* Сдвинуто правее линии */
+  left: 32px;
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--muted);
@@ -116,11 +121,15 @@
   padding: var(--space-md) 0;
   border-bottom: 1px solid var(--about-border);
   will-change: transform, opacity;
-  /* Анимируем GPU-свойство transform, а не padding */
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Ховер только для устройств с мышью (предотвращает залипания на iOS) */
+/* Обязательно убираем линию у последнего элемента, чтобы не было двойной полосы с border-bottom от секции */
+.engineeringRow:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .engineeringRow:hover {
     transform: translateX(8px);
@@ -142,7 +151,6 @@
   max-width: 55ch; 
 }
 
-/* Отключение анимаций по запросу системы */
 @media (prefers-reduced-motion: reduce) {
   .engineeringRow {
     transition: none !important;
@@ -152,7 +160,7 @@
   }
 }
 
-/* --- Responsive --- */
+/* --- Responsive (Планшеты) --- */
 @media (max-width: 1024px) {
   .gridRow {
     grid-template-columns: 1fr;
@@ -168,9 +176,11 @@
   }
 }
 
+/* --- Responsive (Телефоны) --- */
 @media (max-width: 768px) {
   .container {
-    padding: 0 var(--space-xl);
+    /* На мобильных обычно отступ меньше, xl может сжимать контент */
+    padding: 0 var(--space-md);
   }
   
   .gridRow {
@@ -184,8 +194,10 @@
 
   .engineeringRow {
     grid-template-columns: 1fr;
-    gap: var(--space-xs);
+    gap: 4px; /* Прижимаем описание к термину */
     padding: var(--space-sm) 0;
+    /* Убираем лишние линии в списке на мобильных, оставляя дизайн "воздушным" */
+    border-bottom: none; 
   }
   
   .engineeringDesc {
