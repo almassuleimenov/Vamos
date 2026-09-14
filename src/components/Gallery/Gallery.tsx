@@ -5,11 +5,11 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import styles from './Gallery.module.css';
 
 const images = [
-  { id: '01', src: '/IMG_5080.JPG.jpeg', span: 'full' },
-  { id: '02', src: '/IMG_5076.JPG.jpeg', span: 'half' },
-  { id: '03', src: '/IMG_5077.JPG.jpeg', span: 'half' },
-  { id: '04', src: '/IMG_5078.JPG.jpeg', span: 'offset' },
-  { id: '05', src: '/IMG_5079.JPG.jpeg', span: 'full' },
+  { id: '01', src: '/1.jpg.jpeg', span: 'full' },
+  { id: '02', src: '/2.jpg.jpeg', span: 'half' },
+  { id: '03', src: '/3.jpg.jpeg', span: 'half' },
+  { id: '04', src: '/4.jpg.jpeg', span: 'offset' },
+  { id: '05', src: '/5.jpg.jpeg', span: 'full' },
 ];
 
 // Локализация alt-текстов (ru/kz/en)
