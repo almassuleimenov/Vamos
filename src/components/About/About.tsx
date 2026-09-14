@@ -10,19 +10,17 @@ const dictionaries = {
       engineering: 'Архитектура и инженерия',
     },
     metrics: [
-      { value: '1 071.4', unit: 'м²', label: 'Общая площадь здания' },
-      { value: '611.3', unit: 'м²', label: 'Офисные и торговые пространства' },
-      { value: '263.2', unit: 'м²', label: 'Цоколь (паркинг / детейлинг)' },
-      { value: '3.9', unit: 'м', label: 'Высота потолков (1-2 этажи)' },
-      { value: '9', unit: 'баллов', label: 'Расчетная сейсмостойкость' },
+      { value: '1 071.4', unit: 'м²', label: 'Общая площадь здания' }, // ТРЕБУЕТ УТОЧНЕНИЯ
+      { value: '1 072', unit: 'м²', label: 'Офисные и торговые пространства' },
+      { value: '3.9', unit: 'м', label: 'Высота потолков (1-2 этажи)' }, // ТРЕБУЕТ УТОЧНЕНИЯ
+      { value: '10', unit: 'баллов', label: 'Расчетная сейсмостойкость' },
       { value: '0.0664', unit: 'га', label: 'Участок в частной собственности' },
     ],
     engineering: [
-      { term: 'Фасад', desc: 'Навесной вентилируемый с минераловатным утеплением.' },
-      { term: 'Цоколь', desc: 'Натуральный гранит.' },
+      { term: 'Фасад', desc: 'Вентилируемый фасад, травертин.' },
       { term: 'Остекление', desc: 'Алюминиевая витражная система, двухкамерные энергосберегающие стеклопакеты в пол.' },
       { term: 'Конструктив', desc: 'Монолитный железобетонный каркас, монолитная фундаментная плита, газоблок 200 мм.' },
-      { term: 'Лифт', desc: 'Пассажирский лифт, связывающий все 3 уровня.' },
+      { term: 'Лифт', desc: 'Пассажирский лифт, связывающий все 3 уровня.' }, // ТРЕБУЕТ УТОЧНЕНИЯ (3 уровня?)
     ],
   },
   kz: {
@@ -32,15 +30,13 @@ const dictionaries = {
     },
     metrics: [
       { value: '1 071.4', unit: 'м²', label: 'Ғимараттың жалпы ауданы' },
-      { value: '611.3', unit: 'м²', label: 'Кеңсе және сауда кеңістіктері' },
-      { value: '263.2', unit: 'м²', label: 'Жертөле (паркинг / детейлинг)' },
+      { value: '1 072', unit: 'м²', label: 'Кеңсе және сауда кеңістіктері' },
       { value: '3.9', unit: 'м', label: 'Төбе биіктігі (1-2 қабаттар)' },
-      { value: '9', unit: 'балл', label: 'Есептік сейсмикалық төзімділік' },
+      { value: '10', unit: 'балл', label: 'Есептік сейсмикалық төзімділік' },
       { value: '0.0664', unit: 'га', label: 'Жер учаскесі жеке меншікте' },
     ],
     engineering: [
-      { term: 'Қасбет', desc: 'Минералды мақтамен жылытылған аспалы желдетілетін.' },
-      { term: 'Жертөле', desc: 'Табиғи гранит.' },
+      { term: 'Қасбет', desc: 'Желдетілетін қасбет, травертин.' },
       { term: 'Шынылау', desc: 'Алюминий витраж жүйесі, еденге дейінгі екі камералы энергия үнемдейтін шыныпакеттер.' },
       { term: 'Конструктив', desc: 'Монолитті темірбетон қаңқа, монолитті іргетас тақтасы, газблок 200 мм.' },
       { term: 'Лифт', desc: 'Барлық 3 деңгейді байланыстыратын жолаушылар лифті.' },
@@ -53,15 +49,13 @@ const dictionaries = {
     },
     metrics: [
       { value: '1 071.4', unit: 'm²', label: 'Total building area' },
-      { value: '611.3', unit: 'm²', label: 'Office and retail spaces' },
-      { value: '263.2', unit: 'm²', label: 'Basement (parking / detailing)' },
+      { value: '1 072', unit: 'm²', label: 'Office and retail spaces' },
       { value: '3.9', unit: 'm', label: 'Ceiling height (1st-2nd floors)' },
-      { value: '9', unit: 'points', label: 'Design seismic resistance' },
+      { value: '10', unit: 'points', label: 'Design seismic resistance' },
       { value: '0.0664', unit: 'ha', label: 'Privately owned land plot' },
     ],
     engineering: [
-      { term: 'Facade', desc: 'Ventilated curtain wall with mineral wool insulation.' },
-      { term: 'Plinth', desc: 'Natural granite.' },
+      { term: 'Facade', desc: 'Ventilated facade, travertine.' },
       { term: 'Glazing', desc: 'Aluminum curtain wall system, floor-to-ceiling double-glazed energy-saving units.' },
       { term: 'Structure', desc: 'Monolithic reinforced concrete frame, monolithic foundation slab, 200mm aerated concrete block.' },
       { term: 'Elevator', desc: 'Passenger elevator connecting all 3 levels.' },

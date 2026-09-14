@@ -1,122 +1,92 @@
-.gallery {
-  --gallery-bg: var(--bg);
-  --lightbox-bg: rgba(0, 0, 0, 0.85);
-  
-  width: 100%;
-  padding: var(--space-xxl) 0;
-  background-color: var(--gallery-bg);
-  overflow-x: hidden;
-}
-
-.container {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 var(--space-md);
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: var(--space-xl) var(--space-sm);
-}
-
-.item {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-  will-change: transform, opacity;
-}
-
-.full { grid-column: span 12; }
-.half { grid-column: span 6; }
-.offset { grid-column: 3 / span 8; }
-
-.meta {
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding-bottom: var(--space-xs);
-}
-
-.numberMask {
-  overflow: hidden;
-  padding-bottom: 0.1em;
-  margin-bottom: -0.1em;
-}
-
-.number {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--text);
-  will-change: transform;
-}
-
-.metaLine {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background-color: color-mix(in oklch, var(--text) 15%, transparent);
-  transform-origin: left center;
-  will-change: transform;
-}
-
-.imageWrapper {
-  width: 100%;
-  overflow: hidden;
-  background-color: color-mix(in oklch, var(--text) 5%, transparent);
-  cursor: zoom-in;
-  transform: translateZ(0); 
-  /* Улучшает обработку тапов в мобильных браузерах */
-  -webkit-tap-highlight-color: transparent;
-}
-
-.image {
-  width: 100%;
-  height: auto;
-  display: block;
-  object-fit: cover;
-  will-change: transform, opacity;
-  transform-origin: center center;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .imageWrapper:hover .image {
-    filter: brightness(0.92);
-    transition: filter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-}
-
 /* --- Lightbox --- */
 .lightbox {
   position: fixed;
   inset: 0;
-  z-index: 99999; /* Повышен z-index для изоляции портала */
+  z-index: 2147483000; /* выше любого navbar */
   background-color: var(--lightbox-bg);
   -webkit-backdrop-filter: blur(16px);
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: zoom-out;
-  /* Блокируем скролл интерфейса под модалкой на уровне touch-событий */
+  padding: clamp(24px, 5vw, 64px);
+  cursor: default;
   touch-action: none;
+  overscroll-behavior: contain;
 }
 
 .lightboxImage {
-  width: 90vw;
-  height: 90vh;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
   object-fit: contain;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
-  cursor: default; /* Возвращаем курсор на самой картинке */
   will-change: transform;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* --- Магнитная кнопка закрытия --- */
+.closeButton {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + clamp(16px, 2.5vw, 32px));
+  right: calc(env(safe-area-inset-right, 0px) + clamp(16px, 2.5vw, 32px));
+  z-index: 2;
+
+  display: grid;
+  place-items: center;
+  width: clamp(48px, 4vw, 64px);
+  height: clamp(48px, 4vw, 64px);
+  padding: 0;
+  margin: 0;
+
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff;
+
+  cursor: pointer;
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .closeButton:hover {
+    background-color: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+
+.closeIcon {
+  display: block;
+  width: 42%;
+  height: 42%;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.closeIcon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .image {
     transition: none !important;
     filter: none !important;
+  }
+  .closeButton {
+    transition: none !important;
   }
 }
 
@@ -130,13 +100,24 @@
   .grid {
     gap: var(--space-xl) 0;
   }
-  
-  .full, .half, .offset {
+
+  .full,
+  .half,
+  .offset {
     grid-column: span 12;
   }
-  
-  .lightboxImage {
-    width: 100%;
-    height: 100vh;
+
+  .lightbox {
+    /* динамический vh — корректно при скрытой адресной строке iOS */
+    height: 100dvh;
+    padding: calc(env(safe-area-inset-top, 0px) + 80px) 16px
+      calc(env(safe-area-inset-bottom, 0px) + 24px);
+  }
+
+  .closeButton {
+    width: 48px;
+    height: 48px;
+    top: calc(env(safe-area-inset-top, 0px) + 16px);
+    right: 16px;
   }
 }
