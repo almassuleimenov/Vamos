@@ -14,9 +14,9 @@ const images = [
 ];
 
 const dict = {
-  ru: { alt: 'Рендер VAMOS', fullscreenAlt: 'Полноэкранный рендер VAMOS' },
-  kz: { alt: 'VAMOS рендері', fullscreenAlt: 'VAMOS толық экранды рендері' },
-  en: { alt: 'VAMOS Render', fullscreenAlt: 'VAMOS Fullscreen Render' },
+  ru: { alt: 'Рендер VAMOS', fullscreenAlt: 'Полноэкранный рендер VAMOS', close: 'Закрыть' },
+  kz: { alt: 'VAMOS рендері', fullscreenAlt: 'VAMOS толық экранды рендері', close: 'Жабу' },
+  en: { alt: 'VAMOS Render', fullscreenAlt: 'VAMOS Fullscreen Render', close: 'Close' },
 } as const;
 
 type Lang = keyof typeof dict;
@@ -40,9 +40,13 @@ export default function Gallery({ lang }: GalleryProps) {
     setIsMounted(true);
   }, []);
 
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'Escape') setActiveImage(null);
+  const handleClose = useCallback(() => {
+    setActiveImage(null);
   }, []);
+
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') handleClose();
+  }, [handleClose]);
 
   useEffect(() => {
     if (activeImage) {
@@ -86,15 +90,34 @@ export default function Gallery({ lang }: GalleryProps) {
           animate={{ opacity: 1, backdropFilter: 'blur(16px)' }}
           exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
-          onClick={() => setActiveImage(null)}
+          onClick={handleClose}
         >
+          {/* Кнопка закрытия */}
+          <motion.button
+            className={styles.closeButton}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClose();
+            }}
+            aria-label={t.close}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ delay: 0.2, duration: 0.2 }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </motion.button>
+
           <motion.img
             layoutId={shouldReduceMotion ? undefined : `gallery-img-${activeImage.id}`}
             src={activeImage.src}
             alt={t.fullscreenAlt}
             className={styles.lightboxImage}
             transition={modalSpring}
-            // Предотвращение всплытия клика, если потребуется добавить контролы
+            // Предотвращение всплытия клика (кликая на фото, окно не закроется)
             onClick={(e) => e.stopPropagation()} 
           />
         </motion.div>
@@ -162,7 +185,7 @@ export default function Gallery({ lang }: GalleryProps) {
         </motion.div>
       </div>
 
-      {/* Рендерим модальное окно через Portal в body */}
+      {/* Рендерим модальное окно через Portal в body - спасает от перекрытия navbar'ом */}
       {isMounted && createPortal(lightboxContent, document.body)}
     </section>
   );

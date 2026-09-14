@@ -69,7 +69,6 @@
   background-color: color-mix(in oklch, var(--text) 5%, transparent);
   cursor: zoom-in;
   transform: translateZ(0); 
-  /* Улучшает обработку тапов в мобильных браузерах */
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -93,15 +92,50 @@
 .lightbox {
   position: fixed;
   inset: 0;
-  z-index: 99999; /* Повышен z-index для изоляции портала */
+  /* Значение 99999 железно ставит модалку поверх любого navbar или fixed header */
+  z-index: 99999; 
   background-color: var(--lightbox-bg);
   -webkit-backdrop-filter: blur(16px);
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: zoom-out;
-  /* Блокируем скролл интерфейса под модалкой на уровне touch-событий */
   touch-action: none;
+}
+
+/* --- Кнопка закрытия --- */
+.closeButton {
+  position: absolute;
+  /* Учет вырезов (челок) на мобильных устройствах iOS/Android */
+  top: max(24px, env(safe-area-inset-top, 24px));
+  right: max(24px, env(safe-area-inset-right, 24px));
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2; /* Всегда поверх картинки */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.closeButton svg {
+  width: 24px;
+  height: 24px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .closeButton:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+  }
 }
 
 .lightboxImage {
@@ -109,7 +143,7 @@
   height: 90vh;
   object-fit: contain;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
-  cursor: default; /* Возвращаем курсор на самой картинке */
+  cursor: default; 
   will-change: transform;
 }
 
@@ -126,6 +160,7 @@
   }
 }
 
+/* --- Мобильная адаптация --- */
 @media (max-width: 768px) {
   .grid {
     gap: var(--space-xl) 0;
@@ -136,7 +171,18 @@
   }
   
   .lightboxImage {
-    width: 100%;
-    height: 100vh;
+    width: 100vw;
+    height: 100dvh; /* dvh (dynamic viewport height) исправляет баг с полосой браузера в Safari на iOS */
+    box-shadow: none;
+  }
+  
+  .closeButton {
+    /* На мобилках кнопку делаем чуть компактнее и ближе к краям */
+    top: max(16px, env(safe-area-inset-top, 16px));
+    right: max(16px, env(safe-area-inset-right, 16px));
+    width: 44px; /* Минимальный размер таргет-зоны по гайдлайнам Apple */
+    height: 44px;
+    background-color: rgba(0, 0, 0, 0.4); /* Чуть темнее для контрастности, если фото светлое */
+    border: none;
   }
 }
