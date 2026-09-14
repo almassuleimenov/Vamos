@@ -68,7 +68,7 @@ export function FloatingSocials({ lang }: FloatingSocialsProps) {
     >
       <Magnetic strength={0.4}>
         <a
-          href="https://www.instagram.com/v_clubvillas?igsh=aDJzeW95dDhwY2Fl&utm_source=qr"
+          href="https://www.instagram.com/vamos.alm?stkn=MWN2c2IzeTN0aDJkbg=="
           target="_blank"
           rel="noopener noreferrer"
           className={styles.btn}
@@ -81,7 +81,7 @@ export function FloatingSocials({ lang }: FloatingSocialsProps) {
 
       <Magnetic strength={0.4}>
         <a
-          href="https://wa.me/77015292075"
+          href="https://wa.me/77007111771"
           target="_blank"
           rel="noopener noreferrer"
           className={styles.btn}
