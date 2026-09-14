@@ -128,10 +128,12 @@ export default function FloorPlans({ lang }: FloorPlansProps) {
             viewport={{ once: true, amount: 0.3 }}
           >
             <a 
-              href="/document.pdf" 
-              download={dict.downloadName}
-              className={styles.blueprintCard}
-            >
+  href="/document.pdf" 
+  download={dict.downloadName}
+  target="_blank" // <- Обязательно для мобильных
+  rel="noopener noreferrer" // <- Безопасность при target="_blank"
+  className={styles.blueprintCard}
+>
               {/* Верхняя часть карточки с метаданными */}
               <div className={styles.cardHeader}>
                 <div className={styles.metaCell}>
