@@ -1,6 +1,6 @@
 .gallery {
   --gallery-bg: var(--bg);
-  --lightbox-bg: rgba(0, 0, 0, 0.85); /* Apple-style темная подложка для фото */
+  --lightbox-bg: rgba(0, 0, 0, 0.85);
   
   width: 100%;
   padding: var(--space-xxl) 0;
@@ -31,7 +31,6 @@
 .half { grid-column: span 6; }
 .offset { grid-column: 3 / span 8; }
 
-/* --- Мета-данные (Номера и Линии) --- */
 .meta {
   position: relative;
   display: flex;
@@ -53,7 +52,6 @@
   will-change: transform;
 }
 
-/* Линия-разделитель (GPU scaleX вместо width или border) */
 .metaLine {
   position: absolute;
   bottom: 0;
@@ -65,14 +63,14 @@
   will-change: transform;
 }
 
-/* --- Изображения в сетке --- */
 .imageWrapper {
   width: 100%;
   overflow: hidden;
   background-color: color-mix(in oklch, var(--text) 5%, transparent);
   cursor: zoom-in;
-  /* Для iOS/Safari, чтобы скругления или маски не баговали при трансформациях */
   transform: translateZ(0); 
+  /* Улучшает обработку тапов в мобильных браузерах */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .image {
@@ -81,11 +79,9 @@
   display: block;
   object-fit: cover;
   will-change: transform, opacity;
-  /* Защита от дерганий при инициализации Motion */
   transform-origin: center center;
 }
 
-/* Деликатное затемнение при наведении (scale управляется через Motion) */
 @media (hover: hover) and (pointer: fine) {
   .imageWrapper:hover .image {
     filter: brightness(0.92);
@@ -93,29 +89,30 @@
   }
 }
 
-/* --- Lightbox (Морфинг на полный экран) --- */
+/* --- Lightbox --- */
 .lightbox {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 99999; /* Повышен z-index для изоляции портала */
   background-color: var(--lightbox-bg);
   -webkit-backdrop-filter: blur(16px);
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: zoom-out;
-  will-change: opacity, backdrop-filter;
+  /* Блокируем скролл интерфейса под модалкой на уровне touch-событий */
+  touch-action: none;
 }
 
 .lightboxImage {
   width: 90vw;
   height: 90vh;
-  object-fit: contain; /* Важно: в модалке фото не обрезается */
+  object-fit: contain;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+  cursor: default; /* Возвращаем курсор на самой картинке */
   will-change: transform;
 }
 
-/* --- Fallback для Reduced Motion --- */
 @media (prefers-reduced-motion: reduce) {
   .image {
     transition: none !important;
@@ -123,7 +120,6 @@
   }
 }
 
-/* --- Адаптив --- */
 @media (max-width: 1024px) {
   .offset {
     grid-column: 2 / span 10;
@@ -132,7 +128,7 @@
 
 @media (max-width: 768px) {
   .grid {
-    gap: var(--space-xl) 0; /* Больше отступ между фото на мобилке */
+    gap: var(--space-xl) 0;
   }
   
   .full, .half, .offset {

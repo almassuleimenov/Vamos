@@ -1,18 +1,18 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import styles from './Gallery.module.css';
 
 const images = [
-  { id: '01', src: '/1.jpg.jpeg', span: 'full' },
-  { id: '02', src: '/2.jpg.jpeg', span: 'half' },
-  { id: '03', src: '/3.jpg.jpeg', span: 'half' },
-  { id: '04', src: '/4.jpg.jpeg', span: 'offset' },
-  { id: '05', src: '/5.jpg.jpeg', span: 'full' },
+  { id: '01', src: '/1.jpg.webp', span: 'full' },
+  { id: '02', src: '/2.jpg.webp', span: 'half' },
+  { id: '03', src: '/3.jpg.webp', span: 'half' },
+  { id: '04', src: '/4.jpg.webp', span: 'offset' },
+  { id: '05', src: '/5.jpg.webp', span: 'full' },
 ];
 
-// Локализация alt-текстов (ru/kz/en)
 const dict = {
   ru: { alt: 'Рендер VAMOS', fullscreenAlt: 'Полноэкранный рендер VAMOS' },
   kz: { alt: 'VAMOS рендері', fullscreenAlt: 'VAMOS толық экранды рендері' },
@@ -25,18 +25,21 @@ interface GalleryProps {
   lang: string;
 }
 
-// Физика для модальных окон (монументально, мягко)
 const modalSpring = { type: 'spring', mass: 1, stiffness: 180, damping: 24 } as any;
-// Кинематографичная кривая для скролл-появления
 const customEase = [0.16, 1, 0.3, 1] as any;
 
 export default function Gallery({ lang }: GalleryProps) {
   const t = dict[(lang as Lang)] ?? dict.ru;
 
   const [activeImage, setActiveImage] = useState<typeof images[0] | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 
-  // Доступность: закрытие по Escape
+  // Инициализация для Portals (Next.js SSR защита)
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') setActiveImage(null);
   }, []);
@@ -44,6 +47,7 @@ export default function Gallery({ lang }: GalleryProps) {
   useEffect(() => {
     if (activeImage) {
       document.addEventListener('keydown', handleKeyDown);
+      // Блокировка скролла
       document.body.style.overflow = 'hidden';
     } else {
       document.removeEventListener('keydown', handleKeyDown);
@@ -55,7 +59,6 @@ export default function Gallery({ lang }: GalleryProps) {
     };
   }, [activeImage, handleKeyDown]);
 
-  // Хореография сетки
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -64,7 +67,6 @@ export default function Gallery({ lang }: GalleryProps) {
     },
   };
 
-  // Появление карточки (деликатный scale + opacity)
   const itemVariants = {
     hidden: { opacity: 0, scale: shouldReduceMotion ? 1 : 0.96, y: shouldReduceMotion ? 0 : 20 },
     show: {
@@ -74,6 +76,31 @@ export default function Gallery({ lang }: GalleryProps) {
       transition: { duration: 1.2, ease: customEase },
     },
   };
+
+  const lightboxContent = (
+    <AnimatePresence>
+      {activeImage && (
+        <motion.div
+          className={styles.lightbox}
+          initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+          animate={{ opacity: 1, backdropFilter: 'blur(16px)' }}
+          exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+          onClick={() => setActiveImage(null)}
+        >
+          <motion.img
+            layoutId={shouldReduceMotion ? undefined : `gallery-img-${activeImage.id}`}
+            src={activeImage.src}
+            alt={t.fullscreenAlt}
+            className={styles.lightboxImage}
+            transition={modalSpring}
+            // Предотвращение всплытия клика, если потребуется добавить контролы
+            onClick={(e) => e.stopPropagation()} 
+          />
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 
   return (
     <section className={styles.gallery} id="gallery">
@@ -92,7 +119,6 @@ export default function Gallery({ lang }: GalleryProps) {
               variants={itemVariants}
             >
               <div className={styles.meta}>
-                {/* Mask Reveal для номера */}
                 <div className={styles.numberMask}>
                   <motion.span
                     className={styles.number}
@@ -104,7 +130,6 @@ export default function Gallery({ lang }: GalleryProps) {
                     {img.id}
                   </motion.span>
                 </div>
-                {/* Анимация линии из центра (GPU scaleX) */}
                 <motion.div
                   className={styles.metaLine}
                   initial={{ scaleX: 0 }}
@@ -117,8 +142,10 @@ export default function Gallery({ lang }: GalleryProps) {
               <div
                 className={styles.imageWrapper}
                 onClick={() => setActiveImage(img)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && setActiveImage(img)}
               >
-                {/* Если фото открыто, прячем оригинал в сетке, чтобы работал FLIP-морфинг */}
                 <motion.img
                   layoutId={shouldReduceMotion ? undefined : `gallery-img-${img.id}`}
                   src={img.src}
@@ -135,27 +162,8 @@ export default function Gallery({ lang }: GalleryProps) {
         </motion.div>
       </div>
 
-      {/* Бесшовный FLIP-Лайтбокс */}
-      <AnimatePresence>
-        {activeImage && (
-          <motion.div
-            className={styles.lightbox}
-            initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-            animate={{ opacity: 1, backdropFilter: 'blur(16px)' }}
-            exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-            transition={{ duration: 0.4, ease: 'easeOut' }}
-            onClick={() => setActiveImage(null)}
-          >
-            <motion.img
-              layoutId={shouldReduceMotion ? undefined : `gallery-img-${activeImage.id}`}
-              src={activeImage.src}
-              alt={t.fullscreenAlt}
-              className={styles.lightboxImage}
-              transition={modalSpring}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Рендерим модальное окно через Portal в body */}
+      {isMounted && createPortal(lightboxContent, document.body)}
     </section>
   );
 }
