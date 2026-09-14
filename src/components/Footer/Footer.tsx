@@ -7,8 +7,9 @@ import styles from './Footer.module.css';
 const dict = {
   ru: {
     contacts: [
-      { label: 'Отдел аренды и продаж', val: '+7 (727) 000-00-00', href: 'tel:+77270000000', external: false },
-      { label: 'Мессенджер', val: 'WhatsApp', href: 'https://wa.me/77270000000', external: true },
+      { label: 'Отдел аренды и продаж', val: '+7 (700) 711 17 71', href: 'tel:+77007111771', external: false },
+      { label: 'Мессенджер', val: 'WhatsApp', href: 'https://wa.me/77007111771', external: true },
+      { label: 'Instagram', val: '@vamos.alm', href: 'https://www.instagram.com/vamos.alm?stkn=MWN2c2IzeTN0aDJkbg==', external: true },
       { label: 'Email', val: 'sales@vamos.kz', href: 'mailto:sales@vamos.kz', external: false },
     ],
     locationTitle: 'Локация',
@@ -24,8 +25,9 @@ const dict = {
   },
   kz: {
     contacts: [
-      { label: 'Жалдау және сату бөлімі', val: '+7 (727) 000-00-00', href: 'tel:+77270000000', external: false },
-      { label: 'Мессенджер', val: 'WhatsApp', href: 'https://wa.me/77270000000', external: true },
+      { label: 'Жалдау және сату бөлімі', val: '+7 (700) 711 17 71', href: 'tel:+77007111771', external: false },
+      { label: 'Мессенджер', val: 'WhatsApp', href: 'https://wa.me/77007111771', external: true },
+      { label: 'Instagram', val: '@vamos.alm', href: 'https://www.instagram.com/vamos.alm?stkn=MWN2c2IzeTN0aDJkbg==', external: true },
       { label: 'Email', val: 'sales@vamos.kz', href: 'mailto:sales@vamos.kz', external: false },
     ],
     locationTitle: 'Орналасуы',
@@ -41,8 +43,9 @@ const dict = {
   },
   en: {
     contacts: [
-      { label: 'Leasing & Sales', val: '+7 (727) 000-00-00', href: 'tel:+77270000000', external: false },
-      { label: 'Messenger', val: 'WhatsApp', href: 'https://wa.me/77270000000', external: true },
+      { label: 'Leasing & Sales', val: '+7 (700) 711 17 71', href: 'tel:+77007111771', external: false },
+      { label: 'Messenger', val: 'WhatsApp', href: 'https://wa.me/77007111771', external: true },
+      { label: 'Instagram', val: '@vamos.alm', href: 'https://www.instagram.com/vamos.alm?stkn=MWN2c2IzeTN0aDJkbg==', external: true },
       { label: 'Email', val: 'sales@vamos.kz', href: 'mailto:sales@vamos.kz', external: false },
     ],
     locationTitle: 'Location',
