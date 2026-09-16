@@ -4,6 +4,13 @@ import { useState, FormEvent } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import styles from './CtaForm.module.css';
 
+// 1. ДОБАВЛЕНО: Декларация для TypeScript, чтобы он не ругался на window.fbq
+declare global {
+  interface Window {
+    fbq: any;
+  }
+}
+
 const dict = {
   ru: {
     title: 'Обсудить покупку',
@@ -118,6 +125,11 @@ export default function CtaForm({ lang }: CtaFormProps) {
         throw new Error(`Бэкенд вернул ${res.status}: ${errorData.error || 'Неизвестная ошибка'}`);
       }
       
+      // 2. ДОБАВЛЕНО: Триггер Meta Pixel после успешного ответа сервера
+      if (typeof window !== 'undefined' && window.fbq) {
+        window.fbq('track', 'Lead');
+      }
+
       setIsSuccess(true);
     } catch (error) {
       console.error('Ошибка при отправке:', error);
