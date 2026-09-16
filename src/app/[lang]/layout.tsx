@@ -5,7 +5,7 @@ import SmoothScroll from '@/ui/SmoothScroll/SmoothScroll';
 import '../globals.css';
 import Preloader from '@/components/Preloader/Preloader';
 import Navbar from '@/components/Navbar/Navbar';
-import Script from 'next/script'; // <-- Импорт компонента Script
+import Script from 'next/script';
 
 const fontDisplay = localFont({
   src: '../fonts/Satoshi-Variable.woff2',
@@ -82,7 +82,7 @@ export default async function RootLayout({
             t.src=v;s=b.getElementsByTagName(e)[0];
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '937855995276539');
+            fbq('init', '1702206004207736'); // <-- Обновленный ID
             fbq('track', 'PageView');
           `}
         </Script>
@@ -94,7 +94,7 @@ export default async function RootLayout({
             height="1"
             width="1"
             style={{ display: 'none' }}
-            src="https://www.facebook.com/tr?id=937855995276539&ev=PageView&noscript=1"
+            src="https://www.facebook.com/tr?id=1702206004207736&ev=PageView&noscript=1" // <-- Обновленный ID
             alt=""
           />
         </noscript>
