@@ -6,6 +6,8 @@ import '../globals.css';
 import Preloader from '@/components/Preloader/Preloader';
 import Navbar from '@/components/Navbar/Navbar';
 import Script from 'next/script';
+import { Analytics } from '@vercel/analytics/next';
+
 
 const fontDisplay = localFont({
   src: '../fonts/Satoshi-Variable.woff2',
@@ -102,6 +104,7 @@ export default async function RootLayout({
         <Preloader />
         <Navbar lang={locale} />
         <SmoothScroll>{children}</SmoothScroll>
+         <Analytics />
       </body>
     </html>
   );
