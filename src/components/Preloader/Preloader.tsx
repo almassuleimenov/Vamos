@@ -16,10 +16,22 @@ export default function Preloader() {
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
-    // Фаза загрузки/эмоции длится 2.2 секунды
+    // Повторный визит в рамках сессии — прелоадер не показываем вовсе
+    let seen = false;
+    try {
+      seen = sessionStorage.getItem('vamos-preloader-seen') === '1';
+      sessionStorage.setItem('vamos-preloader-seen', '1');
+    } catch {}
+
+    if (seen) {
+      setIsMounted(false);
+      return;
+    }
+
+    // Короткая фаза: буквы успевают проявиться, но сайт не «висит»
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2200);
+    }, 900);
     return () => clearTimeout(timer);
   }, []);
 
@@ -30,7 +42,7 @@ export default function Preloader() {
     initial: { y: '0%' },
     exit: { 
       y: '-100%', 
-      transition: { duration: 1.2, ease: exitEase, delay: 0.2 } 
+      transition: { duration: 0.8, ease: exitEase, delay: 0.05 } 
     }
   } as any;
 
@@ -44,7 +56,7 @@ export default function Preloader() {
     exit: { 
       y: shouldReduceMotion ? 0 : 40, 
       opacity: 0, 
-      transition: { duration: 0.6, ease: revealEase } 
+      transition: { duration: 0.4, ease: revealEase } 
     }
   } as any;
 
@@ -54,7 +66,7 @@ export default function Preloader() {
     animate: { 
       y: '0%', 
       opacity: 1, 
-      transition: { duration: 1.2, ease: revealEase } 
+      transition: { duration: 0.6, ease: revealEase } 
     }
   } as any;
 
@@ -81,7 +93,7 @@ export default function Preloader() {
                   className={styles.letter}
                   variants={letterVariants}
                   // Создаем каскадную волну появления
-                  transition={{ delay: index * 0.08 }} 
+                  transition={{ delay: index * 0.05 }} 
                 >
                   {letter}
                 </motion.span>

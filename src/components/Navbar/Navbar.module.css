@@ -12,16 +12,14 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0);
   
   transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              backdrop-filter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: background-color, backdrop-filter;
+              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Эффект чистого светлого стекла (Идеально для белого сайта) */
 .scrolled {
-  background-color: rgba(255, 255, 255, 0.65); /* Легкая белая вуаль */
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  background-color: rgba(255, 255, 255, 0.82); /* Белая вуаль; лёгкий blur без saturate — дешевле для GPU */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-bottom-color: rgba(0, 0, 0, 0.05); /* Очень деликатная линия */
 }
 
@@ -97,7 +95,6 @@
   transform: scaleX(0);
   transform-origin: right center;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
 }
 
 .navLink:hover::after {
@@ -134,7 +131,6 @@
   width: 12px;
   height: 12px;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
 }
 
 .chevronUp {
@@ -192,7 +188,6 @@
   height: 1px;
   background-color: var(--text);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
-  will-change: transform;
 }
 
 .burgerActive .burgerLine:nth-child(1) { transform: translateY(3.5px) rotate(45deg); }
@@ -207,7 +202,6 @@
   display: flex;
   flex-direction: column;
   padding: 100px var(--space-lg) var(--space-xl);
-  will-change: clip-path;
 }
 
 .mobileContainer {

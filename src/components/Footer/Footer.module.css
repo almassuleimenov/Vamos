@@ -23,7 +23,6 @@
   overflow: hidden;
   padding-bottom: 0.1em;
   margin-bottom: -0.1em;
-  will-change: transform;
 }
 
 /* Основная сетка */
@@ -64,7 +63,6 @@
   letter-spacing: -0.02em;
   text-transform: uppercase;
   line-height: 1;
-  will-change: transform;
 }
 
 /* Контакты */
@@ -79,7 +77,6 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  will-change: transform, opacity;
 }
 
 .contactLabel {
@@ -110,7 +107,6 @@
   transform: scaleX(0);
   transform-origin: right center;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -133,7 +129,6 @@
   color: var(--text);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  will-change: transform;
 }
 
 /* Тексты */
@@ -143,7 +138,6 @@
   line-height: 1.5;
   color: var(--muted);
   margin: 0;
-  will-change: transform, opacity;
 }
 
 .disclaimers {
@@ -159,7 +153,6 @@
   line-height: 1.5;
   margin: 0;
   max-width: 50ch;
-  will-change: transform, opacity;
 }
 
 /* Нижний бар (Колофон) */
@@ -169,7 +162,6 @@
   align-items: center;
   padding: var(--space-md) 0 var(--space-lg);
   border-top: 1px solid var(--border);
-  will-change: opacity;
 }
 
 .copyright {

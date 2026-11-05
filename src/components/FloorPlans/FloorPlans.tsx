@@ -128,7 +128,7 @@ export default function FloorPlans({ lang }: FloorPlansProps) {
             viewport={{ once: true, amount: 0.3 }}
           >
             <a 
-              href="/document.pdf" 
+              href="/document-opt.pdf" 
               download={dict.downloadName}
               target="_blank" 
               rel="noopener noreferrer" 

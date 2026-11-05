@@ -115,7 +115,7 @@ export default function Hero({ lang }: HeroProps) {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 1.8, ease: customEasing }}
         >
-          <source src="/Hero.mp4" type="video/mp4" />
+          <source src="/Hero-opt.mp4" type="video/mp4" />
         </motion.video>
         <div className={styles.mediaOverlay} />
       </div>

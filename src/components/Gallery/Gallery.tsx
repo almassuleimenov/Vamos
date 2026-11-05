@@ -6,11 +6,11 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import styles from './Gallery.module.css';
 
 const images = [
-  { id: '01', src: '/1.jpg.webp', span: 'full' },
-  { id: '02', src: '/2.jpg.webp', span: 'half' },
-  { id: '03', src: '/3.jpg.webp', span: 'half' },
-  { id: '04', src: '/4.jpg.webp', span: 'offset' },
-  { id: '05', src: '/5.jpg.webp', span: 'full' },
+  { id: '01', src: '/gallery/1-1280.webp', full: '/gallery/1-2400.webp', span: 'full' },
+  { id: '02', src: '/gallery/2-1280.webp', full: '/gallery/2-2400.webp', span: 'half' },
+  { id: '03', src: '/gallery/3-1280.webp', full: '/gallery/3-2400.webp', span: 'half' },
+  { id: '04', src: '/gallery/4-1280.webp', full: '/gallery/4-2400.webp', span: 'offset' },
+  { id: '05', src: '/gallery/5-1280.webp', full: '/gallery/5-2400.webp', span: 'full' },
 ];
 
 const dict = {
@@ -86,9 +86,9 @@ export default function Gallery({ lang }: GalleryProps) {
       {activeImage && (
         <motion.div
           className={styles.lightbox}
-          initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-          animate={{ opacity: 1, backdropFilter: 'blur(16px)' }}
-          exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
           onClick={handleClose}
         >
@@ -113,7 +113,7 @@ export default function Gallery({ lang }: GalleryProps) {
 
           <motion.img
             layoutId={shouldReduceMotion ? undefined : `gallery-img-${activeImage.id}`}
-            src={activeImage.src}
+            src={activeImage.full}
             alt={t.fullscreenAlt}
             className={styles.lightboxImage}
             transition={modalSpring}
@@ -172,6 +172,9 @@ export default function Gallery({ lang }: GalleryProps) {
                 <motion.img
                   layoutId={shouldReduceMotion ? undefined : `gallery-img-${img.id}`}
                   src={img.src}
+                  srcSet={`${img.src} 1280w, ${img.full} 2400w`}
+                  sizes={img.span === 'full' ? '100vw' : '(max-width: 768px) 100vw, 50vw'}
+                  decoding="async"
                   alt={`${t.alt} ${img.id}`}
                   className={styles.image}
                   loading="lazy"

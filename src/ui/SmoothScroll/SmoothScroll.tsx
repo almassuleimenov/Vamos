@@ -35,8 +35,8 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
       ref={lenisRef}
       autoRaf={false}
       options={{
-        lerp: 0.07,
-        wheelMultiplier: 0.9,
+        lerp: 0.12,
+        wheelMultiplier: 1,
         smoothWheel: true,
         orientation: 'vertical',
         gestureOrientation: 'vertical',
